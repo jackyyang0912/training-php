@@ -9,11 +9,12 @@
 <body>
 <?php
     session_start();
-    if(!isset($_GET['key']) || $_GET['key'] != '123456') {
-        echo 'Không đc phép vô đây';die();
+    // Check if the user is logged in, if not then redirect to login page
+    if(!isset($_SESSION["is_login"]) && $_SESSION["is_login"] !== true){
+        header("location: http://localhost/training-php/website.com/login.php");
     }
     //Kết nối SQL
-    require_once ('./../libs/database.php');
+    require_once ('./../../libs/database.php');
     $connect = connect_db();
 
     $id = $_GET['id']; 
@@ -98,8 +99,25 @@ if(isset($_POST['name'])) {
         mysqli_query($connect, $sql);
         
         $_SESSION["message"] = "Đã chỉnh sửa thành công id = $id";
-        header('Location: http://localhost/training-php/website.com/product');
+        header('Location: http://localhost/training-php/website.com/admin/product');
     }
+}
+//Kiem tra update status
+if(isset($_GET['id']) && isset($_GET['status'])){
+    $id = $_GET['id'];
+    $update_status = $_GET['status'];
+    if($update_status == "New"){
+        $update_status = "Used";
+    }else{
+        $update_status = "New";
+    }
+    echo 'get' . $_GET['status'].$update_status ; 
+
+    $sql_update = "UPDATE product SET status = '$update_status' WHERE id = " . $id;
+    echo $sql_update; 
+    mysqli_query($connect, $sql_update);
+    $_SESSION["message"] = "Đã update thành công id = $id (status = $update_status)";
+    header('Location: http://localhost/training-php/website.com/admin/product');
 }
 
 ?>

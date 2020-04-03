@@ -3,11 +3,11 @@ session_start();
 $_SESSION['message'] = "";
 $message="";
 
-//Kết nối SQL
-require_once ('./libs/database.php');
-$connect = connect_db();
+
    
 if(isset($_POST['username']) && isset($_POST['password'])){
+    require_once ('./libs/database.php');
+    $connect = connect_db();
 
       //Validate dữ liệu trên server side
       $username = mysqli_real_escape_string($connect,$_POST['username']);
@@ -15,14 +15,13 @@ if(isset($_POST['username']) && isset($_POST['password'])){
       
       $sql = "SELECT * FROM user WHERE username = '$username' and password = '$password'";
       $result = mysqli_query($connect,$sql);
-      $row = mysqli_fetch_assoc($result);
       
       // If result matched $username and $password, table row must be 1 row
       $count = mysqli_num_rows($result);
       if($count == 1) {
          $_SESSION["is_login"] = true;
          $_SESSION["username"] = $username;
-         header("location: index.php");
+         header("location: http://localhost/training-php/website.com/admin/product");
       }else {
           
         $message= "Name or Password is invalid !!";

@@ -8,8 +8,13 @@
 </head>
 <body>
 <?php
+    session_start();
+    // Check if the user is logged in, if not then redirect to login page
+    if(!isset($_SESSION["is_login"]) && $_SESSION["is_login"] !== true){
+        header("location: http://localhost/training-php/website.com/login.php");
+    }
     //Kết nối SQL
-    require_once ('./../libs/database.php');
+    require_once ('./../../libs/database.php');
     $connect = connect_db();
 
 
@@ -80,7 +85,7 @@ if(isset($_POST['name'])) {
         $resurt = mysqli_query ($connect, $sql );
         session_start();
         $_SESSION["message"] = "Đã thêm thành công ID = $id";
-        header('Location: http://localhost/training-php/website.com/product');
+        header('Location: http://localhost/training-php/website.com/admin/product');
     }
 }
 ?>
@@ -139,7 +144,7 @@ if(isset($_POST['name'])) {
                     <input type="text" id="fname" name="created" value="<?php if(isset($created)) { echo $created; } ?>"><br>
 
                     <input type="submit" value="Submit">
-                    <a href="http://localhost/training-php/website.com/product">Trở về</a>
+                    <a href="http://localhost/training-php/website.com/admin/product">Trở về</a>
                 </form>
 
 </html>

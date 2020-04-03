@@ -12,17 +12,16 @@
 <body>
     <?php
     session_start();
-
     // Check if the user is logged in, if not then redirect to login page
-    if(!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true){
-    echo 'Không đc phép vô đây';
+    if(!isset($_SESSION["is_login"]) && $_SESSION["is_login"] !== true){
+        header("location: http://localhost/training-php/website.com/login.php");
     }?>
     
-    <h3>Click here to <a href = "http://localhost/training-php/website.com/login.php">Log In</a></h2> 
+    <h3>Click here to <a href = "http://localhost/training-php/website.com/logout.php">Log out</a></h2> 
     
     <?php
     //Kết nối SQL
-        require_once ('./../libs/database.php');
+        require_once ('./../../libs/database.php');
         $connect = connect_db();
 
         
@@ -33,6 +32,7 @@
             $price_min = isset($_GET['price_min']) ? $_GET['price_min'] : '';
             $price_max = isset($_GET['price_max']) ? $_GET['price_max'] : '';
             $status = isset($_GET['status']) ? $_GET['status'] : '';
+            $submit_status = isset($_GET['submit_status']) ? $_GET['submit_status'] : '';
 
     //Tìm kiếm theo id và name và price và status (flag_where)
             $sql = "SELECT * FROM product"; //$str1 . $str2
@@ -89,11 +89,11 @@
                    $_SESSION["message"] = "Đã xóa thành công id =";
                }
             }
-        
-        //Kiểm tra câu sql 
-        echo $sql;
-            $resurt = mysqli_query ($connect, $sql );
 
+            $resurt = mysqli_query ($connect, $sql );
+            $update_status = "UPDATE product SET status = '$submit_status' where id = ' . $id ";          
+            mysqli_query($connect, $update_status);
+    
     ?>
     <h2> DANH SÁCH ĐƠN HÀNG </h2>
             <!-- form Tìm kiếm -->
@@ -181,15 +181,17 @@
                     <p><img src="http://localhost/training-php/website.com/uploads/<?= $row['image'] ?>" width="50" height="50"></p>
                     <?php echo $row['name']; ?>
                 </td>
-                <td><?php echo $row ['status']; ?></td>
+                <td>
+                    <button><a href = 'http://localhost/training-php/website.com/admin/product/edit.php?id=<?php echo $row ['id'];echo "&status=".$row ['status'];?>'><?= $row['status']; ?></a></button>
+                </td>
                 <td><?php echo $row ['picture']; ?></td>
                 <td><?php echo $row ['decription']; ?></td>
                 <td><?php echo $row ['detail']; ?></td>
                 <td><?php echo $row ['price']; ?></td>
                 <td><?php echo $row ['created']; ?></td>
                 <td>
-                    <button><a href = 'http://localhost/training-php/website.com/product/delete.php?id=<?php echo $row ['id'];?>'> Xoá</a></button>
-                    <button><a href = 'http://localhost/training-php/website.com/product/edit.php?id=<?php echo $row ['id'];?>'> Sửa</a></button>
+                    <button><a href = 'http://localhost/training-php/website.com/admin/product/delete.php?id=<?php echo $row ['id'];?>'> Xoá</a></button>
+                    <button><a href = 'http://localhost/training-php/website.com/admin/product/edit.php?id=<?php echo $row ['id'];?>'> Sửa</a></button>
                 </td>
             </tr>
             <?php } ?>
