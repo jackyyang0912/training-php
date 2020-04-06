@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chinh sua</title>
-    <link rel="stylesheet" href="http://localhost/training-php/website.com/public/styles.css">
+    <link rel="stylesheet" href="<?= $base_url ?>/public/styles.css">
 </head>
 <body>
 <?php
-    session_start();
-    // Check if the user is logged in, if not then redirect to login page
-    if(!isset($_SESSION["is_login"]) && $_SESSION["is_login"] !== true){
-        header("location: http://localhost/training-php/website.com/login.php");
-    }
-    //Kết nối SQL
-    require_once ('./../../libs/database.php');
-    $connect = connect_db();
 
     $id = $_GET['id']; 
     $sql = "SELECT * FROM product WHERE id =  $id";
@@ -73,9 +65,9 @@ if(isset($_POST['name'])) {
         if (!in_array(strtolower($type_file), $type_fileAllow)) {
             $errors[] = 'File bạn vừa chọn hệ thống không hỗ trợ, bạn vui lòng chọn hình ảnh';
         }
-            $old_image = './../uploads/' .$row['image'];
+            $old_image = ROOT_PATH .'/uploads/' .$row['image'];
             $name_image = time() . '-' . $_FILES["image"]["name"];
-            $path_image = './../uploads/' . $name_image;
+            $path_image = ROOT_PATH .'/uploads/' . $name_image;
             unlink($old_image);
             move_uploaded_file($_FILES["image"]["tmp_name"], $path_image);
         }else {
@@ -99,7 +91,7 @@ if(isset($_POST['name'])) {
         mysqli_query($connect, $sql);
         
         $_SESSION["message"] = "Đã chỉnh sửa thành công id = $id";
-        header('Location: http://localhost/training-php/website.com/admin/product');
+        header("Location: $base_url/admin");
     }
 }
 //Kiem tra update status
@@ -117,7 +109,7 @@ if(isset($_GET['id']) && isset($_GET['status'])){
     echo $sql_update; 
     mysqli_query($connect, $sql_update);
     $_SESSION["message"] = "Đã update thành công id = $id (status = $update_status)";
-    header('Location: http://localhost/training-php/website.com/admin/product');
+    header("Location: $base_url/admin?");
 }
 
 ?>
@@ -157,7 +149,7 @@ if(isset($_GET['id']) && isset($_GET['status'])){
                         </select>
                     
                     <label for="lname">image</label>
-                    <p><img src="http://localhost/training-php/website.com/uploads/<?= $row['image'] ?>" width="50" height="50"></p>
+                    <p><img src="<?= $base_url ?>/uploads/<?= $row['image'] ?>" width="50" height="50"></p>
                     <input type="file" name="image">
                     </br>   
 

@@ -1,5 +1,73 @@
+<?php
 
 
+
+    //Kiểm tra tồn tại giá trị tìm kiếm
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        $name = isset($_GET['name']) ? $_GET['name'] : '';
+        $price_min = isset($_GET['price_min']) ? $_GET['price_min'] : '';
+        $price_max = isset($_GET['price_max']) ? $_GET['price_max'] : '';
+        $status = isset($_GET['status']) ? $_GET['status'] : '';
+        $submit_status = isset($_GET['submit_status']) ? $_GET['submit_status'] : '';
+
+    //Tìm kiếm theo id và name và price và status (flag_where)
+        $sql = "SELECT * FROM product"; //$str1 . $str2
+        $flag_where = false;
+        if($id != '') {
+            $sql .= " where id = $id";
+            $flag_where = true;
+        }
+        if($name != '') {
+            if($flag_where) {
+            $sql .= " AND `name` = '$name' ";
+            }else {
+            $sql .= " WHERE  `name` = '$name' ";
+            $flag_where = true;
+            }
+        }
+        if($price_min != '') {
+            if($flag_where) {
+            $sql .= " AND price > '$price_min'";
+            }else {
+            $sql .= " WHERE price > '$price_min'";
+            $flag_where = true;
+            }
+        }
+        if($price_max != '') {
+            if ($price_min > $price_max){
+                $_SESSION["message"] = "Xin kiểm tra lại giá trị tìm kiếm";
+            }else {
+                if($flag_where) {
+                $sql .= " AND price < '$price_max'";
+                }else {
+                    $sql .= " WHERE price < '$price_max'";
+                    $flag_where = true;
+                }
+            }
+        }
+        if($status != '') {
+            if($flag_where) {
+                $sql .= " AND status = '$status'";
+            }else {
+                $sql .= " WHERE status = '$status'";
+                $flag_where = true;
+            }
+        }
+    //Xóa nhiều id
+        if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
+            $ids = $_POST['ids'];
+            foreach($ids as $id) {
+                $query = 'DELETE FROM product WHERE id = ' . $id;
+                mysqli_query($connect, $query);
+                $_SESSION["message"] = "Đã xóa thành công id =";
+            }
+        }
+
+
+        $resurt = mysqli_query ($connect, $sql );
+
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,94 +75,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List</title>
-    <link rel="stylesheet" href="http://localhost/training-php/website.com/public/styles.css">
+    <link rel="stylesheet" href="<?= $base_url ?>/public/styles.css">
 </head>
 <body>
-    <?php
-    session_start();
-    // Check if the user is logged in, if not then redirect to login page
-    if(!isset($_SESSION["is_login"]) && $_SESSION["is_login"] !== true){
-        header("location: http://localhost/training-php/website.com/login.php");
-    }?>
-    
-    <h3>Click here to <a href = "http://localhost/training-php/website.com/logout.php">Log out</a></h2> 
-    
-    <?php
-    //Kết nối SQL
-        require_once ('./../../libs/database.php');
-        $connect = connect_db();
-
-        
-
-    //Kiểm tra tồn tại giá trị tìm kiếm
-            $id = isset($_GET['id']) ? $_GET['id'] : '';
-            $name = isset($_GET['name']) ? $_GET['name'] : '';
-            $price_min = isset($_GET['price_min']) ? $_GET['price_min'] : '';
-            $price_max = isset($_GET['price_max']) ? $_GET['price_max'] : '';
-            $status = isset($_GET['status']) ? $_GET['status'] : '';
-            $submit_status = isset($_GET['submit_status']) ? $_GET['submit_status'] : '';
-
-    //Tìm kiếm theo id và name và price và status (flag_where)
-            $sql = "SELECT * FROM product"; //$str1 . $str2
-            $flag_where = false;
-            if($id != '') {
-                $sql .= " where id = $id";
-                $flag_where = true;
-            }
-            if($name != '') {
-                if($flag_where) {
-                $sql .= " AND `name` = '$name' ";
-                }else {
-                $sql .= " WHERE  `name` = '$name' ";
-                $flag_where = true;
-                }
-            }
-            if($price_min != '') {
-                if($flag_where) {
-                $sql .= " AND price > '$price_min'";
-                }else {
-                $sql .= " WHERE price > '$price_min'";
-                $flag_where = true;
-                }
-            }
-            if($price_max != '') {
-                if ($price_min > $price_max){
-                    $_SESSION["message"] = "Xin kiểm tra lại giá trị tìm kiếm";
-                }else {
-                    if($flag_where) {
-                    $sql .= " AND price < '$price_max'";
-                    }else {
-                        $sql .= " WHERE price < '$price_max'";
-                        $flag_where = true;
-                    }
-                }
-            }
-            if($status != '') {
-                if($flag_where) {
-                    $sql .= " AND status = '$status'";
-                }else {
-                    $sql .= " WHERE status = '$status'";
-                    $flag_where = true;
-                }
-            }
-
-
-
-        //Xóa nhiều id
-            if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
-                $ids = $_POST['ids'];
-                foreach($ids as $id) {
-                   $query = 'DELETE FROM product WHERE id = ' . $id;
-                   mysqli_query($connect, $query);
-                   $_SESSION["message"] = "Đã xóa thành công id =";
-               }
-            }
-
-            $resurt = mysqli_query ($connect, $sql );
-            $update_status = "UPDATE product SET status = '$submit_status' where id = ' . $id ";          
-            mysqli_query($connect, $update_status);
-    
-    ?>
+    <h3 >Welcome <?php echo $_SESSION["username"] ?>, Click here to <a href = "<?= $base_url ?>/admin/logout.php">Log out</a></h2> 
     <h2> DANH SÁCH ĐƠN HÀNG </h2>
             <!-- form Tìm kiếm -->
     <a><b>Tìm kiếm Sản phẩm : </b></a><br><br>
@@ -133,7 +117,7 @@
     <!-- Form xóa nhiều id -->
     <form action="" method="POST">
         <div>
-            <a href="http://localhost/training-php/website.com/product/create.php">Thêm mới</a>
+            <a href="<?= $base_url ?>/admin/index.php?controller=product&action=create">Thêm mới</a>
         </div>
             <?php 
                     if(isset($_SESSION['message'])) { 
@@ -178,11 +162,11 @@
                 <td><?php echo $row ['id'];?></td>
                 <td><?php echo $row ['category_id']; ?></td>
                 <td>
-                    <p><img src="http://localhost/training-php/website.com/uploads/<?= $row['image'] ?>" width="50" height="50"></p>
+                    <p><img src="<?= $base_url ?>/uploads/<?= $row['image'] ?>" width="50" height="50"></p>
                     <?php echo $row['name']; ?>
                 </td>
                 <td>
-                    <button><a href = 'http://localhost/training-php/website.com/admin/product/edit.php?id=<?php echo $row ['id'];echo "&status=".$row ['status'];?>'><?= $row['status']; ?></a></button>
+                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=edit&id=<?php echo $row ['id'];echo "&status=".$row ['status'];?>'><?= $row['status']; ?></a></button>
                 </td>
                 <td><?php echo $row ['picture']; ?></td>
                 <td><?php echo $row ['decription']; ?></td>
@@ -190,8 +174,8 @@
                 <td><?php echo $row ['price']; ?></td>
                 <td><?php echo $row ['created']; ?></td>
                 <td>
-                    <button><a href = 'http://localhost/training-php/website.com/admin/product/delete.php?id=<?php echo $row ['id'];?>'> Xoá</a></button>
-                    <button><a href = 'http://localhost/training-php/website.com/admin/product/edit.php?id=<?php echo $row ['id'];?>'> Sửa</a></button>
+                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=delete&id=<?php echo $row ['id'];?>'> Xoá</a></button>
+                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=edit&id=<?php echo $row ['id'];?>'> Sửa</a></button>
                 </td>
             </tr>
             <?php } ?>

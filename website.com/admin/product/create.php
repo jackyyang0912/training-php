@@ -4,19 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thêm mới</title>
-    <link rel="stylesheet" href="http://localhost/training-php/website.com/public/styles.css">
+    <link rel="stylesheet" href="<?= $base_url ?>/public/styles.css">
 </head>
 <body>
 <?php
-    session_start();
-    // Check if the user is logged in, if not then redirect to login page
-    if(!isset($_SESSION["is_login"]) && $_SESSION["is_login"] !== true){
-        header("location: http://localhost/training-php/website.com/login.php");
-    }
-    //Kết nối SQL
-    require_once ('./../../libs/database.php');
-    $connect = connect_db();
-
 
 if(isset($_POST['name'])) {
     $id             = $_POST['id'];
@@ -69,7 +60,7 @@ if(isset($_POST['name'])) {
         }
 
         $name_image = time() . '-' . $_FILES["image"]["name"];
-        $path_image = './../uploads/' . $name_image;
+        $path_image = ROOT_PATH .'/uploads/' . $name_image;
         $type_file = pathinfo($_FILES["image"]["name"],PATHINFO_EXTENSION);
         $type_fileAllow = array('png', 'jpg', 'jpeg', 'gif','jfif');
         if (!in_array(strtolower($type_file), $type_fileAllow)) {
@@ -85,7 +76,7 @@ if(isset($_POST['name'])) {
         $resurt = mysqli_query ($connect, $sql );
         session_start();
         $_SESSION["message"] = "Đã thêm thành công ID = $id";
-        header('Location: http://localhost/training-php/website.com/admin/product');
+        header("Location: $base_url/admin");
     }
 }
 ?>
@@ -144,7 +135,7 @@ if(isset($_POST['name'])) {
                     <input type="text" id="fname" name="created" value="<?php if(isset($created)) { echo $created; } ?>"><br>
 
                     <input type="submit" value="Submit">
-                    <a href="http://localhost/training-php/website.com/admin/product">Trở về</a>
+                    <a href="<?= $base_url ?>/admin">Trở về</a>
                 </form>
 
 </html>
