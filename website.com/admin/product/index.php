@@ -1,5 +1,7 @@
 <?php
-
+    //Kết nối SQL
+    require_once ('./../libs/database.php');
+    $connect = connect_db();
 
 
     //Kiểm tra tồn tại giá trị tìm kiếm
@@ -11,62 +13,46 @@
         $submit_status = isset($_GET['submit_status']) ? $_GET['submit_status'] : '';
 
     //Tìm kiếm theo id và name và price và status (flag_where)
-        $sql = "SELECT * FROM product"; //$str1 . $str2
-        $flag_where = false;
+        $where = [];
         if($id != '') {
-            $sql .= " where id = $id";
-            $flag_where = true;
+            $where[] = ['id', '=', $id];
         }
         if($name != '') {
-            if($flag_where) {
-            $sql .= " AND `name` = '$name' ";
-            }else {
-            $sql .= " WHERE  `name` = '$name' ";
-            $flag_where = true;
-            }
+            $where[] = ['name', '=', $name];
         }
         if($price_min != '') {
-            if($flag_where) {
-            $sql .= " AND price > '$price_min'";
-            }else {
-            $sql .= " WHERE price > '$price_min'";
-            $flag_where = true;
-            }
+            $where[] = ['price', '>', $name];
         }
         if($price_max != '') {
-            if ($price_min > $price_max){
-                $_SESSION["message"] = "Xin kiểm tra lại giá trị tìm kiếm";
-            }else {
-                if($flag_where) {
-                $sql .= " AND price < '$price_max'";
-                }else {
-                    $sql .= " WHERE price < '$price_max'";
-                    $flag_where = true;
-                }
-            }
+            $where[] = ['price', '<', $price_max];
         }
         if($status != '') {
-            if($flag_where) {
-                $sql .= " AND status = '$status'";
-            }else {
-                $sql .= " WHERE status = '$status'";
-                $flag_where = true;
-            }
+            $where[] = ['status', '=', $status];
         }
+
+
+    $db = new DB();
+    $data = $db->getAll([], $where);
+
     //Xóa nhiều id
-        if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
-            $ids = $_POST['ids'];
-            foreach($ids as $id) {
-                $query = 'DELETE FROM product WHERE id = ' . $id;
-                mysqli_query($connect, $query);
-                $_SESSION["message"] = "Đã xóa thành công id =";
-            }
+
+        
+    if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
+
+        
+        $ids = $_POST['ids'];
+
+        foreach($ids as $id) {
+            $where[] = ['id', '=', $id];
+            echo '<pre>';
+            print_r($where);
+            echo  '</pre>';
+            $db->deletes($where);
+            $_SESSION["message"] = "Đã xóa thành công id =";
         }
-
-
-        $resurt = mysqli_query ($connect, $sql );
-
-
+        
+    }
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -153,32 +139,33 @@
                 <th>Hành động</th>
             </tr>
             <?php
-                while($row = mysqli_fetch_assoc($resurt)) {
+                if($data) {
+                    foreach($data as $obj) {
             ?>
             <tr>
                 <td>
-                    <input type="checkbox" name="ids[]" value="<?php echo $row['id']; ?>" >
+                    <input type="checkbox" name="ids[]" value="<?php echo $obj->id; ?>" >
                 </td>
-                <td><?php echo $row ['id'];?></td>
-                <td><?php echo $row ['category_id']; ?></td>
+                <td><?php echo $obj->id;?></td>
+                <td><?php echo $obj->category_id; ?></td>
                 <td>
-                    <p><img src="<?= $base_url ?>/uploads/<?= $row['image'] ?>" width="50" height="50"></p>
-                    <?php echo $row['name']; ?>
+                    <p><img src="<?= $base_url ?>/uploads/<?= $obj->image?>" width="50" height="50"></p>
+                    <?php echo $obj->name; ?>
                 </td>
                 <td>
-                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=edit&id=<?php echo $row ['id'];echo "&status=".$row ['status'];?>'><?= $row['status']; ?></a></button>
+                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=edit&id=<?php echo $obj->id;echo "&status=".$obj->status;?>'><?= $obj->status; ?></a></button>
                 </td>
-                <td><?php echo $row ['picture']; ?></td>
-                <td><?php echo $row ['decription']; ?></td>
-                <td><?php echo $row ['detail']; ?></td>
-                <td><?php echo $row ['price']; ?></td>
-                <td><?php echo $row ['created']; ?></td>
+                <td><?php echo $obj->picture; ?></td>
+                <td><?php echo $obj->decription; ?></td>
+                <td><?php echo $obj->detail; ?></td>
+                <td><?php echo $obj->price; ?></td>
+                <td><?php echo $obj->created; ?></td>
                 <td>
-                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=delete&id=<?php echo $row ['id'];?>'> Xoá</a></button>
-                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=edit&id=<?php echo $row ['id'];?>'> Sửa</a></button>
+                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=delete&id=<?php echo $obj->id;?>'> Xoá</a></button>
+                    <button><a href = '<?= $base_url ?>/admin/index.php?controller=product&action=edit&id=<?php echo $obj->id;?>'> Sửa</a></button>
                 </td>
             </tr>
-            <?php } ?>
+            <?php } }?>
         </table>
         <div>
             <input type="submit" name="submit-multi-id" value="Xóa">

@@ -75,6 +75,27 @@ if(isset($_POST['name'])) {
         }
     
     if(count($errors) == 0) {
+        $where = [];
+        if($id != '') {
+            $where[] = ['id', '=', $id];
+        }
+        if($name != '') {
+            $where[] = ['name', '=', $name];
+        }
+        if($price_min != '') {
+            $where[] = ['price', '>', $name];
+        }
+        if($price_max != '') {
+            $where[] = ['price', '<', $price_max];
+        }
+        if($status != '') {
+            $where[] = ['status', '=', $status];
+        }
+        $where[] = ['id', '=', $id];
+        $db = new DB();
+        $db->update($where);
+
+
         $sql = "UPDATE product SET 
             id = '$ids' , 
             category_id = '$category_id', 
