@@ -16,21 +16,23 @@
     //Tìm kiếm theo id và name và price và status (flag_where)
         $where= [];
         if($id != '') {
-            $where[] = ['id', '=', $id];
+            $where['where'][] = ['id', '=', $id];
         }
         if($name != '') {
-            $where[] = ['name', '=', $name];
+            $where['where'][] = ['name', '=', $name];
         }
         if($price_min != '') {
-            $where[] = ['price', '>', $name];
+            $where['where'][] = ['price', '>', $name];
         }
         if($price_max != '') {
-            $where[] = ['price', '<', $price_max];
+            $where['where'][] = ['price', '<', $price_max];
         }
         if($status != '') {
-            $where[] = ['status', '=', $status];
+            $where['where'][] = ['status', '=', $status];
         }
-
+        echo "<pre>";
+        print_r($where);
+        echo "</pre>";
 
     //Xóa nhiều id
         if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
