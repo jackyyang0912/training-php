@@ -1,8 +1,9 @@
 <?php
     //Kết nối SQL
-    require_once ('./../libs/database.php');
-    $connect = connect_db();
-
+        require_once ('./../libs/database.php');
+        $connect = connect_db();
+        require_once('./../libs/DB.php');
+        $db = new DB();
 
     //Kiểm tra tồn tại giá trị tìm kiếm
         $id = isset($_GET['id']) ? $_GET['id'] : '';
@@ -13,7 +14,7 @@
         $submit_status = isset($_GET['submit_status']) ? $_GET['submit_status'] : '';
 
     //Tìm kiếm theo id và name và price và status (flag_where)
-        $where = [];
+        $where= [];
         if($id != '') {
             $where[] = ['id', '=', $id];
         }
@@ -31,28 +32,15 @@
         }
 
 
-    $db = new DB();
-    $data = $db->getAll([], $where);
-
     //Xóa nhiều id
-
-        
-    if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
-
-        
-        $ids = $_POST['ids'];
-
-        foreach($ids as $id) {
-            $where[] = ['id', '=', $id];
-            echo '<pre>';
-            print_r($where);
-            echo  '</pre>';
-            $db->deletes($where);
+        if(isset($_POST['submit-multi-id']) && isset($_POST['ids'])) {
+            $ids = $_POST['ids'];
+            $db->delete($ids);
             $_SESSION["message"] = "Đã xóa thành công id =";
         }
-        
-    }
+
     
+    $data = $db->selectAll($where);
 ?>
 <!DOCTYPE html>
 <html>

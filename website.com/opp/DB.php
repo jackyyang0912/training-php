@@ -1,66 +1,118 @@
 <?php
 
 class DB {
-    private $conn = null;
-    private $table = null;
-    
+    private $conn   = null;
+    private $table  = "product";
+
     // Ket noi database
     public  function __construct() {
         $servername = "localhost" ;
         $username   = "root";
-        $password   ="";
+        $password   = "";
         $dtb_name   = "my_table_product";
-        $table      = "product";
-        $conn    = @mysqli_connect($this->servername, $this->username, $this->password, $this->dtb_name);
-        @mysqli_set_charset($connect,"utf8");
-        if($conn){
-            $this->conn = $conn;
-            $this->table = $table;
+        
+        $connect    = @mysqli_connect($servername, $username, $password, $dtb_name);
+        if($connect){
+            $this->conn = $connect;
+            @mysqli_set_charset($connect,"utf8");
         }
     }
 
 
-    public function getAll($select = [], $where = [], $limit = [0, 10]) {
+    public function selectAll($select= []) {
         $data = null;
-        $sql = '';
+        $str_column = "*";
         $str_where = '';
-        $str_select = '*';
+        $str_limit = [];
+        $str_select = "";
 
-
-        //xử lý điều kiện select
-        if(!empty($select)) {
-            $str_select = implode(',', $select);
+        //xử lý điều kiện colums
+        if(isset($select['column']) && !empty($select['column'])) {
+            $str_column = implode(',', $select['column']);
         }
+
+        //xử lý điều kiện table
+        $this->table;
 
         //xử lý điều kiện where
-        if(!empty($where)) {
-            foreach($where as $row) {
-                if(!empty($row)) {
-                    $str_where .= $row[0] . $row[1] . (is_numeric($row[2]) ? $row[2] : '\'' . $row[2] . '\'');                  
-                }
-                $str_where .= ' AND ';
-            }
-            $str_where = 'WHERE ' . $str_where . ' true';
+        if(isset($select['where']) && !empty($select['where'])) {
+            $str_where = " WHERE " . $this->createSqlWhere($select['where']) ;
         }
-
-
-
-        //cau sql
-        $sql = "SELECT $str_select FROM $this->table $str_where LIMIT $limit[0], $limit[1]";
+        
+        //Xu li dieu kien limit
+        if(isset($select['limit']) && !empty($select['limit'])) {
+            $str_limit = $select['limit'];
+            $str_limit = 'LIMIT ' . $str_limit[0] . ',' . $str_limit[1];//LIMIT 0, 10
+        }
+            
+        //Cau sql
+        $sql = "SELECT $str_column FROM $this->table $str_where $str_limit";
+        echo $sql;
         $result = mysqli_query ($this->conn, $sql);
         if($result) {
             while($item = mysqli_fetch_object($result)) {
                 $data[] = $item;
             }
         }
-        echo '<pre>';
-        print_r($data);
-        echo  '</pre>';
         return $data;
     }
+
+    // Ham tao cau sql where
+    public function createSqlWhere($select = []) {
+        $str = '';
+            foreach($select as $key => $row) {
+                if(!empty($row)) {
+                    $str .= $row[0] . $row[1] . (is_numeric($row[2]) ? $row[2] : '\'' . $row[2] . '\'');                  
+                }
+                if(count($select) - $key != 1) {
+                    $str .= ' AND ';
+                }
+            }
+        return $str;
+    }
+
+    //Ham tao cau multi
+    public function creatSqlmulti($value) {
+        $str_multi = '';
+        if(!is_array($value)) {
+            if(!empty($value)) {
+            $str_multi = " id = $value";
+            }
+        }else {
+            $str_multi = " id IN " . "(" . implode(',', $value) . ")";
+        }
+        return $str_multi;
+    }
+
+
+    //DELETE single-multi
+    public function delete($value) {
+        if(!empty($value)) {
+        $delete_where = " WHERE " . $this->creatSqlmulti($value);
+        $sql = "DELETE FROM $this->table $delete_where";
+        echo $sql . '<br>';
+        return mysqli_query ($this->conn, $sql);
+        }
+    }
+
+
+    // UPDATE single-multi
+    public function update($update = []) {
+        $str_set = '';
+        if(isset($update['set']) && !empty($update['set'])) {
+            $str_set = $this->createSqlWhere($update['set']);
+            $str_where = " WHERE " . $this->creatSqlmulti($update['where']);
+        }
+        $sql = "UPDATE $this->table SET $str_set $str_where";
+        echo $sql. '<br>';
+        return mysqli_query ($this->conn, $sql);
+    }
+
+
+
+
 }
 
-$db = new DB();
 
 
 
