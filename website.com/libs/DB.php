@@ -24,7 +24,7 @@ class DB {
         $data = null;
         $str_column = "*";
         $str_where = '';
-        $str_limit = '';
+        $str_limit = 'LIMIT 0,10';
         $limit = [0,10];
         $str_select = "";
 
@@ -37,13 +37,13 @@ class DB {
         $this->table;
 
         //xử lý điều kiện where
-        if(isset($select) && !empty($select)) {
-            $str_where = " WHERE " . $this->createSqlWhere($select) ;
+        if(isset($select['where']) && !empty($select['where'])) {
+            $str_where = " WHERE " . $this->createSqlWhere($select['where']) ;
         }
         
         //Xu li dieu kien limit
         if(isset($select['limit']) && !empty($select['limit'])) {
-            $str_limit = $select['limit'];
+            $limit = $select['limit'];
             $str_limit = 'LIMIT ' . $limit[0] . ',' . $limit[1];//LIMIT 0, 10
         }
             
@@ -88,28 +88,41 @@ class DB {
 
 
     //DELETE single-multi
-    public function delete($where) {
+    public function delete($value) {
         if(!empty($value)) {
-            $delete_where = " WHERE " . $this->creatSqlmulti($where);
-            $sql = "DELETE FROM $this->table $delete_where";
+            $delete_where =  $this->creatSqlmulti($value);
+            $sql = "DELETE FROM $this->table WHERE $delete_where";
         }
         return mysqli_query ($this->conn, $sql);
     }
 
 
     // UPDATE single-multi
-    public function update($update,$where) {
+    public function update($update) {
         $str_set = '';
-        $str_where = '';
-        if(isset($update) && !empty($update)) {
-            $str_set = $this->createSqlWhere($update);
-            $str_where = " WHERE " . $this->creatSqlmulti($where);
+        if(isset($update['set']) && !empty($update['set'])) {
+            foreach($update['set'] as $key => $row) {
+                if(!empty($row)) {
+                    $str_set .= $row[0] . $row[1] . (is_numeric($row[2]) ? $row[2] : '\'' . $row[2] . '\'');                  
+                }
+                if(count($update['set']) - $key != 1) {
+                    $str_set .= ' , ';
+                }
+            }
+            $str_where = $this->creatSqlmulti($update['where']);
+            $sql = "UPDATE $this->table SET $str_set WHERE $str_where";
         }
-        $sql = "UPDATE $this->table SET $str_set $str_where";
-        echo $sql. '<br>';
         return mysqli_query ($this->conn, $sql);
     }
 
+    public function create($create) {
+        $str_create = "";
+        if(isset($create) && !empty($create)) {
+            $str_create = "(" . implode(',', $create) . ")";
+            $sql = "INSERT INTO $this->table VALUES $str_create";
+        }
+        return mysqli_query ($this->conn, $sql);
+    }
 
 
 

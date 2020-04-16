@@ -1,84 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm mới</title>
-    <link rel="stylesheet" href="<?= $base_url ?>/public/styles.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Thêm mới</title>
+        <link rel="stylesheet" href="<?= $base_url ?>/public/styles.css">
+    </head>
 <body>
 <?php
+    $db = new DB();
 
-if(isset($_POST['name'])) {
-    $id             = $_POST['id'];
-    $category_id    = $_POST['category_id'];
-    $name           = $_POST['name'];
-    $status         = $_POST['status'];
-    
-    $picture        = $_POST['picture'];
-    $decription     = $_POST['decription'];
-    $detail         = $_POST['detail'];
-    $price          = $_POST['price'];
-    $created        = $_POST['created'];
+    if(isset($_POST['name'])) {
+        $category_id    = $_POST['category_id'];
+        $name           = $_POST['name'];
+        $status         = $_POST['status'];
+        $picture        = $_POST['picture'];
+        $decription     = $_POST['decription'];
+        $detail         = $_POST['detail'];
+        $price          = $_POST['price'];
+        $created        = $_POST['created'];
 
-    $errors     = [];
-    
-    if($id == '') {
-        $errors[] = 'Mã số đơn hàng không được rỗng';
-    }
-    if($category_id == '') {
-        $errors[] = 'Mã số danh mục không được rỗng';
-    }
-    if($name == '') {
-        $errors[] = 'name không được rỗng';
-    }
-    if($status == '') {
-        $errors[] = 'status không được rỗng';
-    }
-    if($picture == '') {
-        $errors[] = 'Hình ảnh không được rỗng';
-    }
-    if($decription == '') {
-        $errors[] = 'Mô tả không được rỗng';
-    }
-    if($detail == '') {
-        $errors[] = 'Chi tiết không được rỗng';
-    }
-    if($price == '') {
-        $errors[] = 'price không được rỗng';
-    }
-    if($created == '') {
-        $errors[] = 'created không được rỗng';
-    }
+        $errors     = [];
 
-
-    if($_FILES["image"]["name"] == '') {
-        $errors[] = 'Vui lòng chọn ảnh';
-    }else {
-        if ($_FILES["image"]["size"] < 500) {
-            $errors[] = 'Kính thước file quá lớn';
+        if($category_id == '') {
+            $errors[] = 'Mã số danh mục không được rỗng';
+        }
+        if($name == '') {
+            $errors[] = 'name không được rỗng';
+        }
+        if($status == '') {
+            $errors[] = 'status không được rỗng';
+        }
+        if($picture == '') {
+            $errors[] = 'Hình ảnh không được rỗng';
+        }
+        if($decription == '') {
+            $errors[] = 'Mô tả không được rỗng';
+        }
+        if($detail == '') {
+            $errors[] = 'Chi tiết không được rỗng';
+        }
+        if($price == '') {
+            $errors[] = 'price không được rỗng';
+        }
+        if($created == '') {
+            $errors[] = 'created không được rỗng';
         }
 
-        $name_image = time() . '-' . $_FILES["image"]["name"];
-        $path_image = ROOT_PATH .'/uploads/' . $name_image;
-        $type_file = pathinfo($_FILES["image"]["name"],PATHINFO_EXTENSION);
-        $type_fileAllow = array('png', 'jpg', 'jpeg', 'gif','jfif');
-        if (!in_array(strtolower($type_file), $type_fileAllow)) {
-            $errors[] = 'File bạn vừa chọn hệ thống không hỗ trợ, bạn vui lòng chọn hình ảnh';
+        if($_FILES["image"]["name"] == '') {
+            $errors[] = 'Vui lòng chọn ảnh';
+        }else {
+            if ($_FILES["image"]["size"] < 500) {
+                $errors[] = 'Kính thước file quá lớn';
+            }
+                $name_image = time() . '-' . $_FILES["image"]["name"];
+                $path_image = ROOT_PATH .'/uploads/' . $name_image;
+                $type_file = pathinfo($_FILES["image"]["name"],PATHINFO_EXTENSION);
+                $type_fileAllow = array('png', 'jpg', 'jpeg', 'gif','jfif');
+            if (!in_array(strtolower($type_file), $type_fileAllow)) {
+                $errors[] = 'File bạn vừa chọn hệ thống không hỗ trợ, bạn vui lòng chọn hình ảnh';
+            }
+        }
+
+            $create[] = 'null';
+            if($category_id != '') {
+                $create[] = $category_id;
+            }
+            if($name != '') {
+                $create[] = "'" . $name . "'";
+            }
+            if($status != '') {
+                $create[] = "'" . $status . "'";
+            }
+                $create[] = "'" . $name_image . "'";
+            if($picture != '') {
+                $create[] = "'" . $picture . "'";
+            }
+            if($decription != '') {
+                $create[] = "'" . $decription . "'";
+            }
+            if($detail != '') {
+                $create[] = "'" . $detail . "'";
+            }
+            if($price != '') {
+                $create[] = $price;
+            }
+            if($created != '') {
+                $create[] = $created;
+            }
+        
+        echo "<pre>";
+        print_r($create);
+        echo "</pre>";
+
+
+        if(count($errors) == 0) {
+            move_uploaded_file($_FILES["image"]["tmp_name"], $path_image);
+            
+            $db->create($create);
+            session_start();
+            $_SESSION["message"] = "Đã thêm thành công";
+            header("Location: $base_url/admin");
         }
     }
-
-    
-    if(count($errors) == 0) {
-        move_uploaded_file($_FILES["image"]["tmp_name"], $path_image);
-        $sql = "INSERT INTO product 
-        VALUES ('$id', '$category_id', '$name', '$status', '$name_image', '$picture', '$decription', '$detail','$price','$created')";
-        $resurt = mysqli_query ($connect, $sql );
-        session_start();
-        $_SESSION["message"] = "Đã thêm thành công ID = $id";
-        header("Location: $base_url/admin");
-    }
-}
 ?>
     <div class="container">
         <div>
@@ -100,10 +124,7 @@ if(isset($_POST['name'])) {
             <div class="container">
                 <form action="" method="POST" enctype="multipart/form-data">
 
-                    <label for="fname">Mã số đơn hàng :</label>
-                    <input type="text" id="fname" name="id" value="<?php if(isset($id)) { echo $id; } ?>"><br>
-
-                    <label for="fname">Mã số danh mục:</label>
+                    <label for="fname">category_id</label>
                     <input type="text" id="fname" name="category_id" value="<?php if(isset($category_id)) { echo $category_id; } ?>"><br>
 
                     <label for="fname">Name</label>
