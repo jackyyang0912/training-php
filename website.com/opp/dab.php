@@ -13,7 +13,7 @@
 
     $data = $db->selectAll($select);
     echo "<pre>";
-    print_r($select);
+    print_r();
     echo "</pre>";
 
     $value = 1;
