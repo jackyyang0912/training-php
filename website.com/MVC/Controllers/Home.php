@@ -2,7 +2,18 @@
 
 class Home extends Controller {
     public function index(){
-        echo __METHOD__ . '<br>';
+        
+        $db3 = $this->db('Product_Model');
+
+        $data3 = $db3->selectAll();
+        echo "<pre>";
+        print_r($data3);
+        echo "</pre>";
+
+
+
+
+
         $this->view->load('home/index');
     }
 
