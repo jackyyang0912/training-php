@@ -76,6 +76,7 @@
             $name_image = $obj->image;   
         }
             
+    //Kiem tra dieu kien update
             $update['where'] = $id;
 
             if($category_id != '') {

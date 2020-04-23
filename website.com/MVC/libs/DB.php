@@ -125,7 +125,12 @@ class DB {
         return mysqli_query ($this->conn, $sql);
     }
 
-
+    public function execueQuery($sql = '', $option = null) {
+        if($sql) {
+             return mysqli_query($this->conn, $sql);
+        }
+         return false;
+     }
 
 }
 
