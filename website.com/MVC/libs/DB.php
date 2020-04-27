@@ -60,6 +60,31 @@ class DB {
         return $data;
     }
 
+
+
+
+    public function selectOne($id) {
+
+        $data = null;
+        $str_where = '';
+
+        //xử lý điều kiện where
+        if(isset($id) && !empty($id)) {
+            $str_where = "id = " . $id ;
+        }
+            
+        //Cau sql
+        $sql = "SELECT * FROM $this->table WHERE $str_where";
+        echo $sql;
+        $result = mysqli_query ($this->conn, $sql);
+        if($result) {
+            while($item = mysqli_fetch_object($result)) {
+                $data = $item;
+            }
+        }
+        return $data;
+    }
+
     // Ham tao cau sql where
     public function createSqlWhere($select = []) {
         $str = '';
@@ -116,21 +141,35 @@ class DB {
         return mysqli_query ($this->conn, $sql);
     }
 
-    public function create($create) {
-        $str_create = "";
-        if(isset($create) && !empty($create)) {
-            $str_create = "(" . implode(',', $create) . ")";
-            $sql = "INSERT INTO $this->table VALUES $str_create";
+        //INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...);
+
+    public function add($data) {
+        if(count($data)>0){
+            $str_col = implode( " , " , array_keys($data));
+            $str_val = '';
+            foreach($data as $row) {
+                $str_val .= ',' . (is_numeric($row) ? $row : '\'' . $row . '\'');             
+            }
+            $str_val =  substr($str_val , 1);
+            $sql = "INSERT INTO $this->table ($str_col) VALUES ($str_val)";
+            return mysqli_query ($this->conn, $sql);
         }
-        return mysqli_query ($this->conn, $sql);
+
     }
 
-    public function execueQuery($sql = '', $option = null) {
-        if($sql) {
-             return mysqli_query($this->conn, $sql);
+    public function edit($id, $data = []) {
+
+        if(count($data)>0){
+            $str_val = '';
+            foreach($data as $row) {
+                $str_val .= ',' . (is_numeric($row) ? $row : '\'' . $row . '\'');             
+            }
+            $str_val =  substr($str_val , 1);
+            echo $sql = "UPDATE $this->table SET $str_val  WHERE id=$id";die();
+            return mysqli_query ($this->conn, $sql);
         }
-         return false;
-     }
+
+    }
 
 }
 

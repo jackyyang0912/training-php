@@ -89,9 +89,6 @@
                 $create[] = $created;
             }
         
-        echo "<pre>";
-        print_r($create);
-        echo "</pre>";
 
 
         if(count($errors) == 0) {

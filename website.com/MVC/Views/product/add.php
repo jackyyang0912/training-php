@@ -1,4 +1,4 @@
-<!doctype html>
+Welcome to Trang Product/get<!doctype html>
 <html lang="en">
  
 <head>
@@ -108,103 +108,126 @@
 
                     <div class="container-fluid">
                         <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Danh sách sản phẩm</h1>
-                        <form action="<?= BASE_PATH . 'index.php?controller=product&action=index' ?>" method="GET">
-                                <input type="hidden" name="controller" value="product">
-                                <input type="hidden" name="action" value="index">
-                            <div class="row">
-                                <div class="col-sm-1">
-                                    <input class="form-control "  name="id" value="<?= $this->id ?>" type="text" placeholder="ID">
-                                </div>
-                                <div class="col-sm-2">
-                                    <input class="form-control"  name="name" value="<?= $this->name ?>" type="text" placeholder="Name">
-                                    
-                                </div>
-                                <div class="col-sm-2">
-                                    <select class="form-control"  name="status" value="">
-                                        <option disabled="" selected="">Chosse Status</option>
-                                        <option value="1">Available</option>
-                                        <option value="0">Invailable</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-1">
-                                    <button type="submit"  class="btn-success btn-sm" id="ex3" >Tìm kiếm</button>
-                                </div>
-                                <div class="col-sm-1">
-                                    <button    class="btn-success btn-sm" id="ex3" ><a href='<?=BASE_PATH ?>index.php?controller=product&action=add'> Thêm mới </a></button>
-                                </div>
-                            </div>
-                        </form>
-                        
-
+                        <h1 class="h3 mb-2 text-gray-800">Thêm mới</h1>
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                <form action="<?=BASE_PATH . 'index.php?controller=product&action=delete'?>" method="POST">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th scope="col">STT</th>
-                                                <th scope="col">ID</th>
-                                                <th scope="col">Danh mục</th>
-                                                <th scope="col">Tên sản phẩm</th>
-                                                <th scope="col">Hình ảnh</th>
-                                                <th scope="col">Tình trạng</th>
-                                                <th scope="col">Mô tả</th>
-                                                <th scope="col">Chi tiết</th>
-                                                <th scope="col">Giá</th>
-                                                <th scope="col">Ngày đăng</th>
-                                                <th scope="col">Chỉnh sửa</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php if($this->data){
-                                                foreach($this->data as $key => $obj) { ?>
-                                                <tr>
-                                                    <td><input type="checkbox" name="ids[]" value="<?php echo $obj->id; ?>" ></td>
-                                                    <th scope="row"><?= $key + 1 ?></th>
-                                                    
-                                                    <td><?= $obj->id ?></td>
-                                                    <td><?= $obj->category_id ?></td>
-                                                    <td><?= $obj->name ?></td>
-                                                    <td><p><img src="<?= UPLOADS.$obj->image?>" width="50" height="50"></p></td>
-                                                    <td>
-                                                        <?php 
-                                                        $url_status = BASE_PATH . 'index.php?controller=product&action=changeStatus&status=' . $obj->status . '&id=' . $obj->id;
-                                                        ?>
-                                                        <?php if($obj->status == 1) { ?>
-                                                            <a href="<?= $url_status ?>" class="btn btn-info btn-sm">Available</a>
-                                                        <?php } else {?>
-                                                            <a href="<?= $url_status ?>" class="btn btn-warning btn-sm">Invailable</a>
-                                                        <?php } ?>
-                                                    </td>
-                                                    
-                                                    <td><?= $obj->decription ?></td>
-                                                    <td><?= $obj->detail ?></td>
-                                                    <td><?= number_format("$obj->price") . "VND" ?></td>
-                                                    <td><?= date("d/m/Y H:iA ", $obj->created) ?></td>
-                                                    <td>
-                                                        <button type="button" class="btn-info btn-sm" ><a href = '<?=BASE_PATH . 'index.php?controller=product&action=delete'.'&id=' . $obj->id . '&image=' . $obj->image?>'> Xoá</a></button>
-                                                        <button type="button" class="btn-info btn-sm" ><a href = '<?=BASE_PATH . 'index.php?controller=product&action=edit'.'&id=' . $obj->id?>'> Sửa</a></button>
-                                                    </td>
-                                                </tr>
-                                            <?php } }?>
-                                        </tbody>
-                                    </table>
-                                    <div>
-                                        <input type="submit" name="submit-multi-id" class="btn-danger btn-sm" value="Xóa">
-                                    </div>
-                                </form>
-                                </div>
+                                
+                        <?php
+                            if($this->errors) { 
+                        ?>
+                            <div class="alert alert-danger">
+                                <ul>
+                                    <?php
+                                        foreach($this->errors as $vl) {
+                                            echo '<li>'.$vl.'</li>';
+                                        }
+                                    ?>
+                                </ul>
                             </div>
+                        <?php
+                            }
+                        ?>
+                            <form action="<?= BASE_PATH . 'index.php?controller=product&action=add' ?>" method="POST" enctype="multipart/form-data">
+                                <div class="card-body">
+                                    <div class="row">     
+                                        <div class="col-sm-2">
+                                            <label>Chọn danh mục</label>
+                                        </div>                          
+                                        <div class="col-sm-2">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <select name="category_id" class="form-control">
+                                                    <?php if($this->data_category_product) { ?>
+                                                        <?php foreach($this->data_category_product as $row) { ?>
+                                                            <option value="<?= $row->id ?>"><?= $row->name ?></option>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                </select>
+                                            </div> 
+                                        </div>
+                                    </div>
+
+                                    <div class="row">     
+                                        <div class="col-sm-2">
+                                            <label>Chọn trạng thái</label>
+                                        </div>                          
+                                        <div class="col-sm-2">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <select name="status" class="form-control">
+                                                    <option disabled >Chosse Status</option>
+                                                    <option value="1" >Available</option>
+                                                    <option value="0">Invailable</option>
+                                                </select>
+                                            </div> 
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label>Nhập tên sản phẩm</label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <input type="text" name="name" class="form-control">
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label>Nhập giá</label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <input type="text" name="price" class="form-control">
+                                            </div> 
+                                        </div>
+                                    </div>    
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label>Nhập decription</label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <textarea name="decription" class="form-control" rows="5" id="comment" ></textarea>
+                                            </div> 
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label>Nhập detail</label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <textarea name="detail" class="form-control" rows="5" id="comment"></textarea>
+                                            </div> 
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label>Chọn hình</label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <input type="file" name="image">
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <button type="submit" name="submit" class="btn-info btn-lg">Lưu</button>
+                                            <button class="btn-info btn-lg" ><a href='<?= BASE_PATH ?>index.php?controller=product&action=index' >Hủy bỏ</a></button>
+                                        </div>
+                                    </div>
+                                </div>    
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
     <script src="<?= BASE_PATH ?>public/assets/vendor/charts/c3charts/c3.min.js"></script>
     <script src="<?= BASE_PATH ?>public/assets/vendor/charts/c3charts/d3-5.4.0.min.js"></script>

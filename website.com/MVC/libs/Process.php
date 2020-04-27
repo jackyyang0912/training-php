@@ -6,7 +6,6 @@
 
     $class_name = ucfirst($controller);
     $path = ROOT_PATH . 'controllers/' . $class_name . '.php';
-    echo $path . '<br>';
     $flag_error = false;
     if(file_exists($path)){
         require_once  $path;
