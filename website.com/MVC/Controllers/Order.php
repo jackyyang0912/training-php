@@ -2,13 +2,13 @@
 
 use Rakit\Validation\Validator;
 
-class Product extends Controller {
+class Order extends Controller {
 
-    public $db_product = null;
+    public $db_order = null;
 
     public function __construct(){
         parent::__construct();
-        $this->db_product = $this->db('Product_Model');
+        $this->db_order = $this->db('Order_Model');
     }
 
 
@@ -31,12 +31,9 @@ class Product extends Controller {
             $select['where'][] = ['status', '=', $status];
         }
 
-        // Trang 1  limit 0,10;  offset = currentPage
-        // Trang 2  limit 10,20;
-        // Trang 2  limit 20,30  
-        // Trang i  limit offset,itemperpage    offset = i
 
-        $totalRow = count($this->db_product->selectAll($select));
+
+        $totalRow = count($this->db_order->selectAll($select));
         $itemperPage = 10 ;
         $totalPage = ceil($totalRow/$itemperPage );
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -49,8 +46,9 @@ class Product extends Controller {
         $this->view->status = $status;
         $this->view->totalPage = $totalPage;
         $this->view->currentPage = $currentPage;
-        $this->view->data = $this->db_product->selectAll($select);
-        $this->view->template = 'product/index';
+        $this->view->data = $this->db_order->selectAll($select);
+
+        $this->view->template = 'order/index';
         $this->view->load('layout');
     }
 
@@ -66,8 +64,8 @@ class Product extends Controller {
             $update['set'][] = ['status', '=', $update_status];
             $update['where'] = $id;
 
-            if($this->db_product->update($update,$id)){
-                $url = BASE_PATH . 'index.php?controller=product&action=index';
+            if($this->db_order->update($update,$id)){
+                $url = BASE_PATH . 'index.php?controller=order&action=index';
                 header('location: ' . $url);
             }
         }
@@ -77,7 +75,7 @@ class Product extends Controller {
 
         //Xoa 1 id + hinh
         $id = isset($_GET['id']) ? $_GET['id'] : '';
-        $this->view->item = $this->db_product->selectOne($id);
+        $this->view->item = $this->db_order->selectOne($id);
 
             //Xoa 1 file hinh
             $old_image = ROOT_PATH . 'uploads/' . $this->view->item->image;
@@ -86,8 +84,8 @@ class Product extends Controller {
             }
             //Xoa 1 id
             if($id != '') {
-                if($this->db_product->delete($id)){
-                    $url = BASE_PATH . 'index.php?controller=product&action=index';
+                if($this->db_order->delete($id)){
+                    $url = BASE_PATH . 'index.php?controller=order&action=index';
                     header('location: ' . $url);
                 }
             }
@@ -100,7 +98,7 @@ class Product extends Controller {
             //Xoa nhieu file hinh
             foreach($ids as $val){
                 $select['where'][0] = ['id','=',$val];
-                $this->view->data = $this->db_product->selectAll($select);
+                $this->view->data = $this->db_order->selectAll($select);
                 if($this->view->data) {
                     foreach($this->view->data as $obj) {
                         $old_image = ROOT_PATH . 'uploads/' . $obj->image;
@@ -112,8 +110,8 @@ class Product extends Controller {
             }
 
             //Xóa nhiều id
-            if($this->db_product->delete($ids)){
-                $url = BASE_PATH . 'index.php?controller=product&action=index';
+            if($this->db_order->delete($ids)){
+                $url = BASE_PATH . 'index.php?controller=order&action=index';
                 header('location: ' . $url);
             }
         }
@@ -163,8 +161,8 @@ class Product extends Controller {
                     'image'         => $name_image ,
                     'created'       => time()
                 ];
-                $this->db_product->add($data);
-                $url = BASE_PATH . 'index.php?controller=product&action=index';
+                $this->db_order->add($data);
+                $url = BASE_PATH . 'index.php?controller=order&action=index';
                 header('location: ' . $url);
             }
         }
@@ -173,7 +171,7 @@ class Product extends Controller {
         $db_category_product = $this->db('Category_product_Model');
         $this->view->errors = $errors;
         $this->view->data_category_product = $db_category_product->selectAll();
-        $this->view->template = 'product/add';
+        $this->view->template = 'order/add';
         $this->view->load('layout');
     }
 
@@ -184,9 +182,9 @@ class Product extends Controller {
         $errors = '';
         $id = isset($_GET['id']) ?  $_GET['id'] : 0;
     
-        $this->view->item = $this->db_product->selectOne($id);
+        $this->view->item = $this->db_order->selectOne($id);
         
-        $url = BASE_PATH . 'index.php?controller=product&action=index';
+        $url = BASE_PATH . 'index.php?controller=order&action=index';
         if(empty($this->view->item)){
             header('location: ' . $url);
         } 
@@ -246,8 +244,8 @@ class Product extends Controller {
                     'created'       => time()
                 ];
 
-                $this->db_product->edit($id,$data);
-                $url = BASE_PATH . 'index.php?controller=product&action=index';
+                $this->db_order->edit($id,$data);
+                $url = BASE_PATH . 'index.php?controller=order&action=index';
                 header('location: ' . $url);
             }
         }
@@ -256,7 +254,7 @@ class Product extends Controller {
         $this->view->data_category_product = $db_category_product->selectAll();
         $this->view->errors = $errors;
 
-        $this->view->template = 'product/edit';
+        $this->view->template = 'order/edit';
         $this->view->load('layout');
     }
 }

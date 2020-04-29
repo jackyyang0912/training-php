@@ -25,8 +25,8 @@ class DB {
         $data = null;
         $str_column = "*";
         $str_where = '';
-        $str_limit = 'LIMIT 0,10';
-        $limit = [0,10];
+        $str_limit = '';
+
         $str_select = "";
 
         //xử lý điều kiện colums
@@ -75,7 +75,6 @@ class DB {
             
         //Cau sql
         $sql = "SELECT * FROM $this->table WHERE $str_where";
-        echo $sql;
         $result = mysqli_query ($this->conn, $sql);
         if($result) {
             while($item = mysqli_fetch_object($result)) {
@@ -161,11 +160,11 @@ class DB {
 
         if(count($data)>0){
             $str_val = '';
-            foreach($data as $row) {
-                $str_val .= ',' . (is_numeric($row) ? $row : '\'' . $row . '\'');             
+            foreach($data as $key => $row) {
+                $str_val .= ',' . $key . '=' . (is_numeric($row) ? $row : '\'' . $row . '\'');             
             }
             $str_val =  substr($str_val , 1);
-            echo $sql = "UPDATE $this->table SET $str_val  WHERE id=$id";die();
+            $sql = "UPDATE $this->table SET $str_val  WHERE id=$id";
             return mysqli_query ($this->conn, $sql);
         }
 
