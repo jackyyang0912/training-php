@@ -60,7 +60,22 @@ class DB {
         return $data;
     }
 
-
+    public function runSql($sql = '', $option = null) {
+        if($sql){
+            if($option){
+                $result = mysqli_query ($this->conn, $sql);
+                if($result) {
+                    while($item = mysqli_fetch_object($result)) {
+                        $data[] = $item;
+                    }
+                }
+                return $data;
+            }else {
+                return mysqli_query($this->conn, $sql);
+            }
+        }
+        return false;
+    }
 
 
     public function selectOne($id) {

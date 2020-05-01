@@ -23,9 +23,9 @@
                 </div>
                 <div class="col-sm-2">
                     <select class="form-control"  name="status" value="">
-                        <option disabled="" selected="">Chosse Status</option>
-                        <option value="1">Available</option>
-                        <option value="0">Invailable</option>
+                        <option value=""  <?= $this->status != ''  ? 'selected' : '' ?>>All status</option>
+                        <option value="1" <?= $this->status == '1' ? 'selected' : '' ?>>Available</option>
+                        <option value="0" <?= $this->status == '0' ? 'selected' : '' ?>>Invailable</option>
                     </select>
                 </div>
                 <div class="col-sm-1">
@@ -68,6 +68,7 @@
                                     <td>
                                         <?php 
                                         $url_status = BASE_PATH . 'index.php?controller=category_product&action=changeStatus&status=' . $obj->status . '&id=' . $obj->id;
+                                      
                                         ?>
                                         <?php if($obj->status == 1) { ?>
                                             <a href="<?= $url_status ?>" class="btn btn-info btn-sm">Available</a>

@@ -17,7 +17,8 @@ class Product extends Controller {
         $id = isset($_GET['id']) ? $_GET['id'] : '';
         $name = isset($_GET['name']) ? $_GET['name'] : '';
         $status = isset($_GET['status']) ? $_GET['status'] : '';
-        $page = isset($_GET['page']) ? $_GET['page'] : '';
+        
+
         $select= [];
         if($id != '') {
             $select['where'][] = ['id', '=', $id];
@@ -40,6 +41,12 @@ class Product extends Controller {
         $itemperPage = 10 ;
         $totalPage = ceil($totalRow/$itemperPage );
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+        if($currentPage){
+            $url_search = '&id=' .$id . '&name=' . $name . '&status=' . $status;
+        }
+
+        $this->view->url_search = $url_search;
+
         $offset = $itemperPage*($currentPage -1);
         $select['limit'] = [$offset,$itemperPage];
 

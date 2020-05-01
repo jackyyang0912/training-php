@@ -2,13 +2,13 @@
 
 use Rakit\Validation\Validator;
 
-class Order extends Controller {
+class User extends Controller {
 
-    public $db_order = null;
+    public $db_user = null;
 
     public function __construct(){
         parent::__construct();
-        $this->db_order = $this->db('Order_Model');
+        $this->db_user = $this->db('User_Model');
     }
 
 
@@ -16,58 +16,38 @@ class Order extends Controller {
 
         $id = isset($_GET['id']) ? $_GET['id'] : '';
         $name = isset($_GET['name']) ? $_GET['name'] : '';
-        $status = isset($_GET['status']) ? $_GET['status'] : '';
-        $page = isset($_GET['page']) ? $_GET['page'] : '';
+ 
+        
+
         $select= [];
+        if($id != '') {
+            $select['where'][] = ['id', '=', $id];
+        }
+        if($name != '') {
 
-        $str_search = '';
-        if($id){
-            $str_search .= " AND `order`.`id` = $id ";
-        }
-        if($name){
-            $str_search .= " AND `user`.`name` LIKE '%$name%' ";
-        }
-        if($status){
-            $str_search .= " AND `order`.`status` = $status ";
+            $select['where'][] = ['name', ' LIKE ', '%' . $name . '%'];
         }
 
-        echo $sql = 'SELECT `order`.*, `user`.`name`, `user`.`email`, `user`.`phone` , COUNT(`order`.`id`) as so_luong 
-                FROM `order`, `user`, `order_detail` 
-                WHERE `order`.`id` = `order_detail`.`order_id` AND `order`.`user_id` = `user`.`id`' . $str_search .
-                ' GROUP BY `order`.`id`';
 
-        $data = $this->db_order->runSql($sql, true);
-
-
-        $totalRow = count($this->db_order->selectAll($select));
+        $totalRow = count($this->db_user->selectAll($select));
         $itemperPage = 10 ;
         $totalPage = ceil($totalRow/$itemperPage );
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+        if($currentPage){
+            $url_search = '&id=' .$id . '&name=' . $name . '&status=' . $status;
+        }
+
+        $this->view->url_search = $url_search;
+
         $offset = $itemperPage*($currentPage -1);
         $select['limit'] = [$offset,$itemperPage];
 
-
         $this->view->id = $id;
         $this->view->name = $name;
-        $this->view->status = $status;
         $this->view->totalPage = $totalPage;
         $this->view->currentPage = $currentPage;
-        $this->view->data = $this->db_order->runSql($sql, true);
-
-        $this->view->template = 'order/index';
-        $this->view->load('layout');
-    }
-
-    public function detail(){
-
-        $id = isset($_GET['id']) ? $_GET['id'] : '';
-        
-        $sql = "SELECT `order_detail`.*, `product`.`name` FROM `order_detail`, `product` 
-        WHERE `order_detail`.`product_id` = `product`.`id`  AND `order_id` = $id";
-
-        $data = $this->db_order->runSql($sql, true);
-        $this->view->data = $this->db_order->runSql($sql, true);
-        $this->view->template = 'order/detail';
+        $this->view->data = $this->db_user->selectAll($select);
+        $this->view->template = 'user/index';
         $this->view->load('layout');
     }
 
@@ -83,8 +63,8 @@ class Order extends Controller {
             $update['set'][] = ['status', '=', $update_status];
             $update['where'] = $id;
 
-            if($this->db_order->update($update,$id)){
-                $url = BASE_PATH . 'index.php?controller=order&action=index';
+            if($this->db_user->update($update,$id)){
+                $url = BASE_PATH . 'index.php?controller=user&action=index';
                 header('location: ' . $url);
             }
         }
@@ -94,7 +74,7 @@ class Order extends Controller {
 
         //Xoa 1 id + hinh
         $id = isset($_GET['id']) ? $_GET['id'] : '';
-        $this->view->item = $this->db_order->selectOne($id);
+        $this->view->item = $this->db_user->selectOne($id);
 
             //Xoa 1 file hinh
             $old_image = ROOT_PATH . 'uploads/' . $this->view->item->image;
@@ -103,8 +83,8 @@ class Order extends Controller {
             }
             //Xoa 1 id
             if($id != '') {
-                if($this->db_order->delete($id)){
-                    $url = BASE_PATH . 'index.php?controller=order&action=index';
+                if($this->db_user->delete($id)){
+                    $url = BASE_PATH . 'index.php?controller=user&action=index';
                     header('location: ' . $url);
                 }
             }
@@ -117,7 +97,7 @@ class Order extends Controller {
             //Xoa nhieu file hinh
             foreach($ids as $val){
                 $select['where'][0] = ['id','=',$val];
-                $this->view->data = $this->db_order->selectAll($select);
+                $this->view->data = $this->db_user->selectAll($select);
                 if($this->view->data) {
                     foreach($this->view->data as $obj) {
                         $old_image = ROOT_PATH . 'uploads/' . $obj->image;
@@ -129,32 +109,30 @@ class Order extends Controller {
             }
 
             //Xóa nhiều id
-            if($this->db_order->delete($ids)){
-                $url = BASE_PATH . 'index.php?controller=order&action=index';
+            if($this->db_user->delete($ids)){
+                $url = BASE_PATH . 'index.php?controller=user&action=index';
                 header('location: ' . $url);
             }
         }
     }
 
     public function add(){
-        $errors = '';
+        $errors = [];
 
         if(isset($_POST['submit'])) {
             $validator = new Validator;
             $validation = $validator->make($_POST + $_FILES, [
-                'category_id'           => 'required',
-                'status'                => 'required',
-                'name'                  => 'required|min:5',
-                'price'                 => 'required|numeric',
-                'detail'                => 'required',
+                'username'              => 'required|min:16',
+                'email'                 => 'required|email',
+                'password'              => 'required',
 
             ]);
 
             $validation->setMessages([
-                'name:required'         => 'Tên sản phẩm không được rỗng',
-                'price:required'        => 'Giá sản phẩm không được rỗng',
-                'numeric'               => 'Giá phải là số',
-                'detail:required'       => 'Chi tiết sản phẩm không được rỗng',
+                'username:required'     => ':attribute không được rỗng',
+                'email:required'        => 'Email không được rỗng',
+                'email:email'           => 'Email chưa đúng',
+                'password:required'     => ':attribute không được rỗng',
 
             ]);
     
@@ -171,6 +149,21 @@ class Order extends Controller {
                 move_uploaded_file($_FILES["image"]["tmp_name"], $path_image);
 
                 //insert
+                $flag_insert = true;
+               
+                if($_POST['password'] != $_POST['re_password']) {
+                    $errors[] = 'Password không trùng khớp';
+                    $flag_insert = false;
+                } 
+
+                $select['where'][] = ['username', '=', $_POST['username']] ;
+                
+                if($this->db_user->selectAll($select)){
+                    $errors[] = 'Username đã tồn tại';
+                    $flag_insert = false;
+                } 
+
+                if($flag_insert) {
                 $data = [
                     'category_id'   => $_POST['category_id'],
                     'name'          => $_POST['name'],
@@ -180,9 +173,10 @@ class Order extends Controller {
                     'image'         => $name_image ,
                     'created'       => time()
                 ];
-                $this->db_order->add($data);
-                $url = BASE_PATH . 'index.php?controller=order&action=index';
+                $this->db_user->add($data);
+                $url = BASE_PATH . 'index.php?controller=user&action=index';
                 header('location: ' . $url);
+                }
             }
         }
         
@@ -190,7 +184,7 @@ class Order extends Controller {
         $db_category_product = $this->db('Category_product_Model');
         $this->view->errors = $errors;
         $this->view->data_category_product = $db_category_product->selectAll();
-        $this->view->template = 'order/add';
+        $this->view->template = 'user/add';
         $this->view->load('layout');
     }
 
@@ -201,9 +195,9 @@ class Order extends Controller {
         $errors = '';
         $id = isset($_GET['id']) ?  $_GET['id'] : 0;
     
-        $this->view->item = $this->db_order->selectOne($id);
+        $this->view->item = $this->db_user->selectOne($id);
         
-        $url = BASE_PATH . 'index.php?controller=order&action=index';
+        $url = BASE_PATH . 'index.php?controller=user&action=index';
         if(empty($this->view->item)){
             header('location: ' . $url);
         } 
@@ -263,8 +257,8 @@ class Order extends Controller {
                     'created'       => time()
                 ];
 
-                $this->db_order->edit($id,$data);
-                $url = BASE_PATH . 'index.php?controller=order&action=index';
+                $this->db_user->edit($id,$data);
+                $url = BASE_PATH . 'index.php?controller=user&action=index';
                 header('location: ' . $url);
             }
         }
@@ -273,7 +267,7 @@ class Order extends Controller {
         $this->view->data_category_product = $db_category_product->selectAll();
         $this->view->errors = $errors;
 
-        $this->view->template = 'order/edit';
+        $this->view->template = 'user/edit';
         $this->view->load('layout');
     }
 }

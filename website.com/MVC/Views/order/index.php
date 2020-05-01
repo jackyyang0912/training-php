@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="page-header">
-                <h2 class="pageheader-title">Order </h2>
+                <h2 class="pageheader-title">Order List</h2>
             </div>
         </div>
     </div>
@@ -23,16 +23,13 @@
                 </div>
                 <div class="col-sm-2">
                     <select class="form-control"  name="status" value="">
-                        <option disabled="" selected="">Chosse Status</option>
-                        <option value="1">Available</option>
-                        <option value="0">Invailable</option>
+                        <option value=""  <?= $this->status != ''  ? 'selected' : '' ?>>Trạng thái</option>
+                        <option value="1" <?= $this->status == '1' ? 'selected' : '' ?>>Đã nhận</option>
+                        <option value="0" <?= $this->status == '0' ? 'selected' : '' ?>>Đã giao</option>
                     </select>
                 </div>
                 <div class="col-sm-1">
                     <button type="submit"  class="btn-success btn-sm" id="ex3" >Tìm kiếm</button>
-                </div>
-                <div class="col-sm-1">
-                    <button    class="btn-success btn-sm" id="ex3" ><a href='<?=BASE_PATH ?>index.php?controller=order&action=add'> Thêm mới </a></button>
                 </div>
             </div>
         </form>
@@ -42,21 +39,20 @@
         <div class="card shadow mb-4">
             <div class="card-body">
                 <div class="table-responsive">
-                <form action="<?=BASE_PATH . 'index.php?controller=order&action=delete'?>" method="POST">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th scope="col">STT</th>
-                                <th scope="col">ID</th>
+                                <th scope="col">Mã đơn</th>
                                 <th scope="col">Tên</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Số lượng</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Số lượng đơn</th>
                                 <th scope="col">Địa chỉ giao hàng</th>
                                 <th scope="col">Ngày nhận</th>
                                 <th scope="col">Ngày giao</th>
                                 <th scope="col">Trạng thái</th>
-                                <th scope="col">Chỉnh sửa</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,39 +60,28 @@
                                 foreach($this->data as $key => $obj) { ?>
                                 <tr>
                                     <td><input type="checkbox" name="ids[]" value="<?php echo $obj->id; ?>" ></td>
-                                    <th scope="row"><?= $key + 1 ?></th>
-                                    
                                     <td><?= $obj->id ?></td>
-                                    <td><?= $obj->category_id ?></td>
                                     <td><?= $obj->name ?></td>
-                                    <td><p><img src="<?= BASE_PATH ?>uploads/<?= $obj->image?>" width="50" height="50"></p></td>
+                                    <td><?= $obj->email ?></td>
+                                    <td><?= $obj->phone ?></td>
+                                    <td><?= $obj->so_luong ?></td>
+                                    <td><?= $obj->address ?></td>
+                                    <td><?= $obj->order_date ?></td>
+                                    <td><?= $obj->deliver_date ?></td>
                                     <td>
-                                        <?php 
-                                        $url_status = BASE_PATH . 'index.php?controller=order&action=changeStatus&status=' . $obj->status . '&id=' . $obj->id;
-                                        ?>
-                                        <?php if($obj->status == 1) { ?>
-                                            <a href="<?= $url_status ?>" class="btn btn-info btn-sm">Available</a>
-                                        <?php } else {?>
-                                            <a href="<?= $url_status ?>" class="btn btn-warning btn-sm">Invailable</a>
-                                        <?php } ?>
-                                    </td>
-                                    
-                                    
-                                    <td><?= $obj->detail ?></td>
-                                    <td><?= number_format("$obj->price") . "VND" ?></td>
-                                    <td><?= date("d/m/Y H:iA ", $obj->created) ?></td>
+                                    <?php 
+                                        $url_status = BASE_PATH . 'index.php?controller=order&action=changeStatus&status=' . $obj->status . '&id=' . $obj->id ;
+                                        $url_detail = BASE_PATH . 'index.php?controller=order&action=detail&id=' . $obj->id;
+                                    ?>
+                                    <?= Helper::setStatus($obj->status,$url_status,'order'); ?></td>
                                     <td>
-                                        <button type="button" class="btn-info btn-sm" ><a href = '<?=BASE_PATH . 'index.php?controller=order&action=delete'.'&id=' . $obj->id . '&image=' . $obj->image?>'> Xoá</a></button>
-                                        <button type="button" class="btn-info btn-sm" ><a href = '<?=BASE_PATH . 'index.php?controller=order&action=edit'.'&id=' . $obj->id?>'> Sửa</a></button>
+                                        <button type="button" class="btn-info btn-sm" ><a href = '<?=$url_detail?>'> Xem Chi tiết</a></button>
                                     </td>
                                 </tr>
                             <?php } }?>
                         </tbody>
                     </table>
-                    <div>
-                        <input type="submit" name="submit-multi-id" class="btn-danger btn-sm" value="Xóa">
-                    </div>
-                </form>
+
 
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">

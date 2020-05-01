@@ -22,6 +22,10 @@
                     <li class="user">
                         <a class="nav-link " href="<?= BASE_PATH . 'index.php?controller=order&action=index' ?>" ><i class="fas fa-fw fas fa-table"></i>Quản lý Order </a>
                     </li>
+
+                    <li class="user">
+                        <a class="nav-link " href="<?= BASE_PATH . 'index.php?controller=user&action=index' ?>" ><i class="fas fa-fw fas fa-table"></i>Quản lý User </a>
+                    </li>
                 </ul>
             </div>
         </nav>
