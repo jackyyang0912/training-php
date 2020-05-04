@@ -99,6 +99,9 @@ class DB {
         return $data;
     }
 
+
+
+
     // Ham tao cau sql where
     public function createSqlWhere($select = []) {
         $str = '';
@@ -158,13 +161,15 @@ class DB {
         //INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...);
 
     public function add($data) {
-        if(count($data)>0){
-            $str_col = implode( " , " , array_keys($data));
+        if(!empty($data)){
+            $str_col = '';
             $str_val = '';
-            foreach($data as $row) {
-                $str_val .= ',' . (is_numeric($row) ? $row : '\'' . $row . '\'');             
+            foreach($data as $key => $row) {
+                $str_col .= ',' .  $key;     
+                $str_val .= ',' . (is_numeric($row) ? $row : '\'' . $row . '\''); 
             }
             $str_val =  substr($str_val , 1);
+            $str_col =  substr($str_col , 1);
             $sql = "INSERT INTO $this->table ($str_col) VALUES ($str_val)";
             return mysqli_query ($this->conn, $sql);
         }

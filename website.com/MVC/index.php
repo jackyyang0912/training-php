@@ -7,3 +7,4 @@
     require_once ('./libs/DB.php');
     require_once ('./libs/validation/vendor/autoload.php');
     require_once ('./libs/process.php');
+    $process = new Process;
