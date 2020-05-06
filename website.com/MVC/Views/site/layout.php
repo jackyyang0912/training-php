@@ -21,21 +21,25 @@
 </head>
 
 <body>
-            <?php
-                include("./views/site/elements/search.php");
-            ?>
+            <?php include("./views/site/elements/search.php");?>
     
+
+
     <div class="main-content-wrapper d-flex clearfix">
+
             <?php
-                include("./views/site/elements/navbar.php");
                 include("./views/site/elements/header.php");
+                
                 include("./views/site/$this->template.php");
             ?>
-    </div>
-            <?php 
 
-                include("./views/site/elements/footer.php");
+    </div>
+
+            <?php 
+                include("./views/site/elements/newletter.php"); 
+                include("./views/site/elements/footer.php"); 
             ?>
+
     <!-- ##### jQuery (Necessary for All JavaScript Plugins) ##### -->
     <script src="<?= BASE_PATH ?>/public/site/js/jquery/jquery-2.2.4.min.js"></script>
     <!-- Popper js -->

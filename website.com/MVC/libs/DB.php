@@ -50,7 +50,7 @@ class DB {
             
         //Cau sql
         $sql = "SELECT $str_column FROM $this->table $str_where $str_limit";
-        echo $sql;
+        
         $result = mysqli_query ($this->conn, $sql);
         if($result) {
             while($item = mysqli_fetch_object($result)) {

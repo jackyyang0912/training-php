@@ -38,5 +38,17 @@
                 return new $name_model;
             }   
         }
+
+        public static function foreachData($data ,$xhtml) {
+            $xhtml = '';
+            if($data){
+                foreach($data as $key => $obj){
+                    $image = BASE_PATH . 'uploads' . DS . $obj->image;
+                    $xhtml;
+                }
+            }
+            return $xhtml;
+        }
+
     }
     

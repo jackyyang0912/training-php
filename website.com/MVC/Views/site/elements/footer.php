@@ -6,12 +6,12 @@
                     <div class="single_widget_area">
                         <!-- Logo -->
                         <div class="footer-logo mr-50">
-                            <a href="<?= BASE_PATH ?>/public/site/index.html"><img src="<?= BASE_PATH ?>/public/site/img/core-img/logo2.png" alt=""></a>
+                            <a href="index.html"><img src="<?= BASE_PATH ?>/public/site/img/core-img/logo2.png" alt=""></a>
                         </div>
                         <!-- Copywrite Text -->
                         <p class="copywrite"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#" target="_blank">Colorlib</a>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
                     </div>
                 </div>
                 <!-- Single Widget Area -->
@@ -24,19 +24,19 @@
                                 <div class="collapse navbar-collapse" id="footerNavContent">
                                     <ul class="navbar-nav ml-auto">
                                         <li class="nav-item active">
-                                            <a class="nav-link" href="<?= BASE_PATH ?>/public/site/index.html">Home</a>
+                                            <a class="nav-link" href="<?= BASE_PATH ?>index.php?controller=home&action=index">Home</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="<?= BASE_PATH ?>/public/site/shop.html">Shop</a>
+                                            <a class="nav-link" href="<?= BASE_PATH ?>index.php?controller=shop&action=index">Shop</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="<?= BASE_PATH ?>/public/site/product-details.html">Product</a>
+                                            <a class="nav-link" href="<?= BASE_PATH ?>index.php?controller=product&action=index">Product</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="<?= BASE_PATH ?>/public/site/cart.html">Cart</a>
+                                            <a class="nav-link" href="<?= BASE_PATH ?>index.php?controller=cart&action=index">Cart</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="<?= BASE_PATH ?>/public/site/checkout.html">Checkout</a>
+                                            <a class="nav-link" href="<?= BASE_PATH ?>index.php?controller=checkout&action=index">Checkout</a>
                                         </li>
                                     </ul>
                                 </div>
