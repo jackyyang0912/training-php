@@ -26,7 +26,7 @@
                         <tbody>
                             <?php 
                                 $total = 0;
-                                if($this->data){
+                                if(isset($this->data)){
                                     foreach($this->data as $key => $obj) { 
                                         $total += $obj->price*$obj->quantity;
                             ?>

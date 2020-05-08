@@ -23,19 +23,22 @@ class Order extends Controller {
     }
 
     public function add() {
+
+
         if(isset($_POST['submit'])) {
             $db_order = $this->db('Order_Model');
 
             if(isset($_SESSION['cart'])) {
 
                 $data = [
-                    'user_id' => 25,
+                    'user_id' => 0,
                     'address' => $_POST['address'],
                     'order_date' => time(),
                     'deliver_date' => strtotime($_POST['deliver_date']),
                     'status' => 0,
                 ];
                 $id = $db_order->add($data);
+                
                 if($id) {
                     $data = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                     if($data) {

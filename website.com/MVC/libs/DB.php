@@ -63,7 +63,7 @@ class DB {
     public function runSql($sql = '', $option = null) {
         if($sql){
             if($option){
-                $result = mysqli_query ($this->conn, $sql);
+                $result = mysqli_query($this->conn, $sql);
                 if($result) {
                     while($item = mysqli_fetch_object($result)) {
                         $data[] = $item;
@@ -171,7 +171,10 @@ class DB {
             $str_val =  substr($str_val , 1);
             $str_col =  substr($str_col , 1);
             $sql = "INSERT INTO $this->table ($str_col) VALUES ($str_val)";
-            return mysqli_query ($this->conn, $sql);
+            $result = mysqli_query($this->conn, $sql);
+            if($result) {
+                return mysqli_insert_id($this->conn);
+            }
         }
 
     }

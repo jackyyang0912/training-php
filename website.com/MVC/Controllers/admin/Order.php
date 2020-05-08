@@ -22,18 +22,20 @@ class Order extends Controller {
 
         $str_search = '';
         if($id){
-            $str_search .= " AND `order`.`id` = $id ";
+            $str_search .= " WHERE `order`.`id` = $id ";
         }
         if($name){
-            $str_search .= " AND `user`.`name` LIKE '%$name%' ";
+            $str_search .= " WHERE `user`.`name` LIKE '%$name%' ";
         }
         if($status){
-            $str_search .= " AND `order`.`status` = $status ";
+            $str_search .= " WHERE `order`.`status` = $status ";
         }
 
         $sql = 'SELECT `order`.*, `user`.`name`, `user`.`email`, `user`.`phone` , COUNT(`order`.`id`) as so_luong 
-                FROM `order`, `user`, `order_detail` 
-                WHERE `order`.`id` = `order_detail`.`order_id` AND `order`.`user_id` = `user`.`id`' . $str_search .
+                FROM `order` 
+                LEFT JOIN `user` ON `order`.`user_id` = `user`.`id`
+                LEFT JOIN `order_detail` ON `order`.`id` = `order_detail`.`order_id`
+                ' . $str_search .
                 ' GROUP BY `order`.`id`';
 
         $data = $this->db_order->runSql($sql, true);
@@ -66,7 +68,7 @@ class Order extends Controller {
         WHERE `order_detail`.`product_id` = `product`.`id`  AND `order_id` = $id";
 
         $data = $this->db_order->runSql($sql, true);
-        $this->view->data = $this->db_order->runSql($sql, true);
+        $this->view->data = $data;
         $this->view->template = 'order/detail';
         $this->view->load('admin/layout');
     }

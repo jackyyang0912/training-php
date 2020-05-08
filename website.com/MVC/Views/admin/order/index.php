@@ -57,7 +57,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if($this->data){
+                            <?php if(isset($this->data)){
                                 foreach($this->data as $key => $obj) { ?>
                                 <tr>
                                     

@@ -23,8 +23,7 @@ class Cart extends Controller {
     }
 
     public function add() {
-echo $_GET['id'];
-echo $_GET['qty'];
+
         $id = isset($_GET['id']) ? $_GET['id'] : '';
         if($id) {
             $qty = isset($_GET['qty']) ? $_GET['qty'] : 1;
@@ -50,9 +49,7 @@ echo $_GET['qty'];
             }
         }
 
-        echo '<pre>';
-        print_r($_SESSION['cart']);
-        echo  '</pre>';
+   
 
         $url = BASE_PATH . 'index.php?controller=cart&action=index';
         header('location: ' . $url);

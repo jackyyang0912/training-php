@@ -9,7 +9,7 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title  -->
-    <title>Amado - Furniture Ecommerce Template | Shop</title>
+    <title>WEBSITE.COM | Shop</title>
 
     <!-- Favicon  -->
     <link rel="icon" href="<?= BASE_PATH ?>/public/site/img/core-img/favicon.ico">
@@ -21,14 +21,17 @@
 </head>
 
 <body>
-            <?php include("./views/site/elements/search.php");?>
+            <?php 
+                include("./views/site/elements/header.php");
+                include("./views/site/elements/search.php");
+            ?>
     
 
 
     <div class="main-content-wrapper d-flex clearfix">
 
             <?php
-                include("./views/site/elements/header.php");
+                include("./views/site/elements/sidebar.php");
                 
                 include("./views/site/$this->template.php");
             ?>
