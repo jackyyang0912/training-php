@@ -1,77 +1,54 @@
 
-<div class="section section-padding">
-            <div class="container">
-                <div class="row mbn-40 mr-auto ">
+	
+	<section id="form"><!--form-->
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4 col-sm-offset-1">
+					<div class="login-form"><!--login form-->
+						<h2>Login to your account</h2>
+						<?php
+							if(isset($this->errors) && !empty($this->errors)) { 
+						?>
+							<div class="alert alert-danger">
+								<ul>
+									<?php
+										foreach($this->errors as $vl) {
+											echo '<li>'.$vl.'</li>';
+										}
+									?>
+								</ul>
+							</div>
+						<?php
+							}
+						?>
+						<form action="#" method="POST">
 
-                    <!-- Login Form Start -->
-                    <div class="col-lg-4 col-md-6 col-12 mr-auto mb-40" style="margin: 0px auto;">
-                        <div class="login-register-form mr-auto">
-                            <h3 class="mb-15 ">Đăng nhập</h3>
-                            <?php
-                                if(isset($this->errors) && !empty($this->errors)) { 
-                            ?>
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        <?php
-                                            foreach($this->errors as $vl) {
-                                                echo '<li>'.$vl.'</li>';
-                                            }
-                                        ?>
-                                    </ul>
-                                </div>
-                            <?php
-                                }
-                            ?>
-                            <form action="#" method="POST">
-                                <div class="row">
-                                    <div class="col-12 mb-20">
-                                        <input placeholder="Username" type="text" name="username">
-                                    </div>
-
-                                    <div class="col-12 mb-20">
-                                        <input placeholder="Password" type="password" name="password">
-                                    </div>
-
-                                    <div class="col-12">
-                                        <button type="submit" name="submit" class="btn btn-round btn-lg" style="width: 100%;">Login</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Login Form End -->
-
-                    <!-- Register Form Start -->
-                    <!-- <div class="col-lg-7 col-md-6 col-12 mb-40">
-                        <div class="login-register-form">
-                            <h3 class="mb-15">Register Form</h3>
-                            <form action="#">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12 mb-20">
-                                        <input placeholder="Name" type="text">
-                                    </div>
-
-                                    <div class="col-lg-6 col-12 mb-20">
-                                        <input placeholder="Enter your email" type="email">
-                                    </div>
-
-                                    <div class="col-lg-6 col-12 mb-20">
-                                        <input placeholder="Password" type="password">
-                                    </div>
-
-                                    <div class="col-lg-6 col-12 mb-20">
-                                        <input placeholder="Repeat Password" type="password">
-                                    </div>
-
-                                    <div class="col-12">
-                                        <button class="btn btn-round btn-lg">Register</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div> -->
-                    <!-- Register Form End -->
-
-                </div>
-            </div>
-        </div><!-- Login & Register Section End -->
+							<input placeholder="Username" type="text" name="username" />
+							<input placeholder="Password" type="password" name="password" />
+							<span>
+								<input type="checkbox" class="checkbox"> 
+								Keep me signed in
+							</span>
+							<button type="submit" name="submit" class="btn btn-default">Login</button>
+						</form>
+					</div><!--/login form-->
+				</div>
+				<div class="col-sm-1">
+					<h2 class="or">OR</h2>
+				</div>
+				<div class="col-sm-4">
+					<div class="signup-form"><!--sign up form-->
+						<h2>New User Signup!</h2>
+						<form action="#">
+							<input type="text" placeholder="Name"/>
+							<input type="email" placeholder="Email Address"/>
+							<input type="password" placeholder="Password"/>
+							<button type="submit" class="btn btn-default">Signup</button>
+						</form>
+					</div><!--/sign up form-->
+				</div>
+			</div>
+		</div>
+	</section><!--/form-->
+	
+	

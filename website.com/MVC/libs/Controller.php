@@ -17,6 +17,14 @@
             
             if($module == 'admin') {
                 if(isset($_SESSION['isLogin']) && $_SESSION['isLogin'] == true) {
+
+                    $user = $_SESSION['user'];
+                    foreach($user as $val)
+                    if($val->level < 2) {
+                        $_SESSION['message'] = 'Bạn không đủ quyền vào trang này';
+                        $url = BASE_PATH . 'index.php?controller=errors&action=message';
+                        header('location: ' . $url);
+                    }
                     //login thành công
                      if($controller == 'user' && $action == 'login') {
                         $url = BASE_PATH . 'index.php?module=admin&controller=product&action=index';

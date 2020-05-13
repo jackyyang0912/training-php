@@ -5,6 +5,10 @@ class Order extends Controller {
     public function __construct($params) {
         parent::__construct($params);
         $this->db_product = $this->db('Product_Model');
+        if(!isset($_SESSION['isLogin'])) {
+            $url = BASE_PATH . 'index.php?controller=user&action=login';
+            header('location: ' . $url);
+        }
     }
 
     public function index() {
@@ -17,6 +21,11 @@ class Order extends Controller {
             }
         }
 
+        if($_SESSION['user']){
+            foreach($_SESSION['user'] as $user);
+        }
+        
+        $this->view->user = $user;
         $this->view->data = $data;
         $this->view->template = 'checkout/index';
         $this->view->load('site/layout');
@@ -24,21 +33,21 @@ class Order extends Controller {
 
     public function add() {
 
-
         if(isset($_POST['submit'])) {
+
             $db_order = $this->db('Order_Model');
 
             if(isset($_SESSION['cart'])) {
-
+                foreach($_SESSION['user'] as $user)
                 $data = [
-                    'user_id' => 0,
+                    'user_id' => $user->id,
                     'address' => $_POST['address'],
                     'order_date' => time(),
                     'deliver_date' => strtotime($_POST['deliver_date']),
                     'status' => 0,
                 ];
                 $id = $db_order->add($data);
-                
+
                 if($id) {
                     $data = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                     if($data) {
@@ -58,7 +67,7 @@ class Order extends Controller {
                 unset($_SESSION['cart']);
             }
         }
-        $url = BASE_PATH . 'index.php?controller=shop&action=index';
+        $url = BASE_PATH . 'index.php?controller=home&action=index';
         header('location: ' . $url);
     }
 

@@ -5,6 +5,10 @@ class Cart extends Controller {
     public function __construct($params) {
         parent::__construct($params);
         $this->db_product = $this->db('Product_Model');
+        if(!isset($_SESSION['isLogin'])) {
+            $url = BASE_PATH . 'index.php?controller=user&action=login';
+            header('location: ' . $url);
+        }
     }
 
     public function index() {
@@ -48,8 +52,6 @@ class Cart extends Controller {
                 );
             }
         }
-
-   
 
         $url = BASE_PATH . 'index.php?controller=cart&action=index';
         header('location: ' . $url);

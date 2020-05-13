@@ -25,8 +25,8 @@
                 <div class="col-sm-2">
                     <select class="form-control"  name="status" value="">
                         <option value=""  <?= $this->status != ''  ? 'selected' : '' ?>>Trạng thái</option>
-                        <option value="1" <?= $this->status == '1' ? 'selected' : '' ?>>Đã nhận</option>
-                        <option value="0" <?= $this->status == '0' ? 'selected' : '' ?>>Đã giao</option>
+                        <option value="1" <?= $this->status == '1' ? 'selected' : '' ?>>Đã giao</option>
+                        <option value="0" <?= $this->status == '0' ? 'selected' : '' ?>>Đã nhận</option>
                     </select>
                 </div>
                 <div class="col-sm-1">

@@ -9,6 +9,7 @@ class User extends Controller {
     public function __construct($params){
         parent::__construct($params);
         $this->db_user = $this->db('User_Model');
+
     }
 
 
