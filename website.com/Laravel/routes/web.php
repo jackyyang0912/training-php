@@ -13,13 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('website', function () {
-    return 'Xin chao' ;
-});
-Route::get('hoten/{ten}', function ($ten) {
-    return 'Xin chao em '.$ten ;
-});
-Route::get('GoiController', 'MyController@xinchao');
+Route::get('home/index'          , "site\HomeController@index");
+Route::get('product/index'       , "site\ProductController@index");
+Route::get('product/detail'      , "site\ProductController@detail");
+
