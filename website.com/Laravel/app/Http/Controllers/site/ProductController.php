@@ -21,21 +21,5 @@ class ProductController extends Controller
     }
 
 
-    public function detail($slug) {
-        $item = Item_model::where('slug', '=', $slug)->first();
-        $category = $item->category;
-        $breadcumb = array();
-        $breadcumb[] = array(
-            'link' => url("san-pham/{$category->slug}-{$category->id}.html"),
-            'name' => $category->name
-        );
-        $breadcumb[] = array(
-                            'link' => '',
-                            'name' =>  $item->name
-                        );
-        $this->data['breadcumb'] = $breadcumb;
-        $this->data['item'] = $item;
-        $this->data['title'] = $item->name;
-        return view('site.product.detail', $this->data);
-    }
+
 }

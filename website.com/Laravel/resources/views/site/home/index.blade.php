@@ -14,7 +14,7 @@
             <div class="product-image-wrapper">
                 <div class="single-products">
                         <div class="productinfo text-center">
-                            <img src="uploads/{{$val->image}}" alt="" />
+                            <img src="uploads/admin/product/{{$val->image}}" alt="" />
                             <h2>{{number_format($val->price)}} VND</h2>
                             <p><a href="'. BASE_PATH. 'index.php?controller=product&action=detail&id='.$obj->id.'" >{{$val->name}}</a></p>
                             <a href="'. BASE_PATH. 'index.php?controller=cart&action=add&id='.$obj->id.'" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
