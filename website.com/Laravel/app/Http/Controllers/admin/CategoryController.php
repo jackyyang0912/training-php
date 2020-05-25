@@ -15,22 +15,27 @@ class CategoryController extends Controller
 
     public function list(Request $request){
 
-        (object)$request->all();
-
         //Tim kiem theo id,name,status
         $list_category = DB::table('category_product')                        
-                        ->select('category_product.*')
-                        ->when($request->id, function($query) use ($request){
-                            $query->where('id', '=', $request->id);
-                        })
-                        ->when($request->name, function($query) use ($request){
-                            $query->where('name', 'LIKE', '%'.$request->name.'%');
-                        })
-                        ->when($request->status, function($query) use ($request){
-                            $query->where('status', '=', $request->status);
-                        })
-                        ->paginate(10);
+                        ->select('category_product.*');
 
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $status = $request->input('status');
+
+        $params = [];
+
+        if($id){
+            $params[] = ['id','=',$id];
+        }
+        if($name){
+            $params[] = ['name','LIKE','%'.$name.'%'];
+        }
+        if($status){
+            $params[] = ['status','=',$status];
+        }
+
+        $list_category = $list_category->where($params)->paginate(10);
 
         return view("admin.$this->prefix.list", compact('list_category', 'request'));
     }
@@ -42,8 +47,6 @@ class CategoryController extends Controller
 
 
     public function postcreate(Request $request){
-
-        (object)$request->all();
 
         $this->validate($request,
             [
@@ -101,6 +104,7 @@ class CategoryController extends Controller
         $this->validate($request,
             [
                 'name'          => 'required|unique:category_product,name|min:3|max:100',
+                'decription'        => 'required',
                 'detail'        => 'required',
                 'image'         => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048'
             ],
@@ -110,6 +114,7 @@ class CategoryController extends Controller
                 'name.unique'       => "Tên {$this->name} đã tồn tại",
                 'name.min'          => "Tên {$this->name} ít nhất 3 ký tự",
                 'name.max'          => "Tên {$this->name} tối đa 100 ký tự",
+                'decription.required'   => "Thông tin chi tiết {$this->name} không được rỗng",  
                 'detail.required'   => "Thông tin chi tiết {$this->name} không được rỗng",          
                 'image.required'    => "Vui lòng chọn ảnh đại diện",
                 'image.mimes'       => "Vui lòng chọn file với đuôi mở rộng: jpeg, png, jpg, gif, svg",
@@ -127,15 +132,13 @@ class CategoryController extends Controller
         $image_name     = time() . '-' . $file->getClientOriginalName();
         //delete old file
         $old_image = $path_upload . $item->image;
-        if(file_exists($old_image)){
+        if(is_file($old_image)){
             unlink($old_image);
         }
         //move file
         $file->move( $path_upload , $image_name);
         }
 
-            
-        
         //update
         $item->name         = $request->name;
         $item->status       = $request->status;
@@ -165,7 +168,9 @@ class CategoryController extends Controller
     }
 
     public function deletes(Request $request) {
+
         $delids = $request->input('ids');
+        
         if($delids){
             $delitem = Category::whereIn('id',$delids)->delete();
             if($delitem){
@@ -181,11 +186,13 @@ class CategoryController extends Controller
     }
 
     public function status($curent_status, $id)
-    {   $message = '';    
+    {   
+        $message = '';    
+        
         $item = Category::find($id);
 
         if($item) {
-            $item->status = $curent_status == 1 ? 2 : 1;
+            $item->status = $curent_status == 1 ? 0 : 1;
             $item->save();
             $message = "Cập nhật status thành công";
         }else {

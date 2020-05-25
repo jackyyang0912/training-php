@@ -313,9 +313,6 @@ class User extends Controller {
                         'created'           => time()
                     ];
 
-                    echo '<pre>';
-                    print_r($data);
-                    echo  '</pre>';
 
                     $this->db_user->edit($id,$data);
                     $url = BASE_PATH . 'index.php?module=admin&controller=user&action=index';

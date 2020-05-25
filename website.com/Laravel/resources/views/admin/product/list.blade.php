@@ -26,17 +26,17 @@
         
             <div class="row">
                 <div class="col-sm-1">
-                    <input class="form-control "  name="id" value="{{$request->id}}" type="text" placeholder="ID">
+                    <input class="form-control "  name="id" value="{{ $request->id }}" type="text" placeholder="ID">
                 </div>
                 <div class="col-sm-2">
-                    <input class="form-control"  name="name" value="{{$request->name}}" type="text" placeholder="Name">
+                    <input class="form-control"  name="name" value="{{ $request->name }}" type="text" placeholder="Name">
                     
                 </div>
                 <div class="col-sm-2">
                     <select class="form-control"  name="status" value="">
-                        <option value="0"   @if( $request->status == '0' )  selected @else  ''  @endif >All Status </option>
-                        <option value="1"   @if( $request->status == '1' )  selected @else  ''  @endif >Invailable</option>
-                        <option value="2"   @if( $request->status == '2' )  selected @else  ''  @endif >Available</option>
+                        <option value=''   <?= $request->status == ''  ? 'selected' : '' ?> >All Status</option>
+                        <option value='null' <?= $request->status == 'null' ? 'selected' : '' ?> >Invailable</option>
+                        <option value='1'   <?= $request->status == 1  ? 'selected' : '' ?> >Available</option>
                     </select>
                 </div>
                 <div class="col-sm-1">

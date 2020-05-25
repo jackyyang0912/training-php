@@ -15,7 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 
 //Trang Admin
-Route::group(['prefix' => 'admin'],function(){
+
+//login
+Route::get('admin/login'                 ,'admin\UserController@getloginAdmin');
+Route::post('admin/login'                ,'admin\UserController@postloginAdmin');
+
+//logout
+Route::get('admin/logout'                ,'admin\UserController@getlogoutAdmin');
+
+//enter admin pages
+Route::group(['prefix' => 'admin','middleware' => 'adminLogin'],function(){
     Route::group(['prefix' => 'product'],function(){
         Route::get('list'                 ,'admin\ProductController@list');
 
@@ -43,6 +52,30 @@ Route::group(['prefix' => 'admin'],function(){
 
         Route::get('delete/{id}'          ,'admin\CategoryController@delete')->where('id', '[0-9]+');
         Route::post('deletes'             ,'admin\CategoryController@deletes');
+    });
+    Route::group(['prefix' => 'user'],function(){
+        Route::get('list'                 ,'admin\UserController@list');
+
+        Route::get('create'               ,'admin\UserController@getcreate');
+        Route::post('create'              ,'admin\UserController@postcreate');
+
+        Route::get('edit/{id}'            ,'admin\UserController@getedit');
+        Route::post('edit/{id}'           ,'admin\UserController@postedit');
+
+        Route::get('status/{curent}/{id}' ,'admin\UserController@status')->where('id', '[0-9]+');
+        Route::get('levels/{curent}/{id}' ,'admin\UserController@levels')->where('id', '[0-9]+');
+
+        Route::get('delete/{id}'          ,'admin\UserController@delete')->where('id', '[0-9]+');
+        Route::post('deletes'             ,'admin\UserController@deletes');
+    });
+    Route::group(['prefix' => 'order'],function(){
+        Route::get('list'                 ,'admin\OrderController@list');
+        Route::get('detail/{id}'               ,'admin\OrderController@detail');
+
+        Route::get('create'               ,'admin\OrderController@getcreate');
+        Route::post('create'              ,'admin\OrderController@postcreate');
+
+        Route::get('status/{curent}/{id}' ,'admin\OrderController@status')->where('id', '[0-9]+');
     });
 });
 

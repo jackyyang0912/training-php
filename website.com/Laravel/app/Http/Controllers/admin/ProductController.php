@@ -9,31 +9,35 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-
+    
     private $prefix = 'product';
     private $name   = 'sản phẩm';
 
     public function list(Request $request){
 
-        (object)$request->all();
-
         //Tim kiem theo id,name,status
         $list_product = DB::table('product')                        
                         ->leftjoin('category_product', 'product.category_id', '=', 'category_product.id')
-                        ->select('product.*', 'category_product.name as cate_name')
-                        ->when($request->id, function($query) use ($request){
-                            $query->where('product.id', '=', $request->id);
-                        })
-                        ->when($request->name, function($query) use ($request){
-                            $query->where('product.name', 'LIKE', '%'.$request->name.'%');
-                        })
-                        ->when($request->status, function($query) use ($request){
-                            $query->where('product.status', '=', $request->status);
-                        })
-                        ->paginate(10);
+                        ->select('product.*', 'category_product.name as cate_name');
 
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $status = $request->input('status');
+        $params = [];
 
-        return view("admin.$this->prefix.list", compact('list_product', 'request'));
+        if($id){
+            $params[] = ['product.id','=',$id];
+        }
+        if($name){
+            $params[] = ['product.name','LIKE','%'.$name.'%'];
+        }
+        if($status){
+            $params[] = ['product.status','=',$status];
+        }
+
+        $list_product = $list_product->where($params)->paginate(10);
+        
+        return view("admin.$this->prefix.list", compact('list_product','request'));
     }
 
     public function getcreate(){
@@ -45,8 +49,6 @@ class ProductController extends Controller
 
 
     public function postcreate(Request $request){
-
-        (object)$request->all();
 
         $this->validate($request,
             [
@@ -97,6 +99,7 @@ class ProductController extends Controller
     public function getedit($id){
 
         $list_category = DB::table('category_product')->get();
+
         $item = Product::find($id);
  
         return view("admin.$this->prefix.edit", compact('item','list_category'));
@@ -104,14 +107,13 @@ class ProductController extends Controller
 
     public function postedit(Request $request,$id){
 
-        $item = Product::find($id);
-
         
-      
+
         $this->validate($request,
             [
                 'name'          => 'required|unique:product,name|min:3|max:100',
                 'price'         => 'required|numeric',
+                'decription'        => 'required',
                 'detail'        => 'required',
                 'image'         => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048'
             ],
@@ -122,6 +124,7 @@ class ProductController extends Controller
                 'name.min'          => "Tên {$this->name} ít nhất 3 ký tự",
                 'name.max'          => "Tên {$this->name} tối đa 100 ký tự",
                 'detail.required'   => "Thông tin chi tiết {$this->name} không được rỗng",
+                'decription.required'   => "Thông tin mô tả {$this->name} không được rỗng",
                 'price.required'    => "Thông tin giá {$this->name} không được rỗng",
                 'numeric'           => "Vui lòng nhập số vào trường này",
                 
@@ -131,24 +134,24 @@ class ProductController extends Controller
             ]
         );
 
+        $item = Product::find($id);
 
         //upload file
         $image_name = '';
         //Kiểm tra file
         if ($request->hasFile('image')) {
-        $path_upload    = "./uploads/admin/{$this->prefix}/";
-        $file           = $request->image;
-        $image_name     = time() . '-' . $file->getClientOriginalName();
-        //move file
-        $file->move( $path_upload , $image_name);
+            $path_upload    = "./uploads/admin/{$this->prefix}/";
+            $file           = $request->image;
+            $image_name     = time() . '-' . $file->getClientOriginalName();
+            //move file
+            $file->move( $path_upload , $image_name);
         }
         //delete old file
         $old_image = $path_upload . $item->image;
-        if(file_exists($old_image)){
+        if(is_file($old_image)){
             unlink($old_image);
         }
             
-        
         //update
         $item->name         = $request->name;
         $item->category_id  = $request->category_id;
@@ -180,7 +183,9 @@ class ProductController extends Controller
     }
 
     public function deletes(Request $request) {
+
         $delids = $request->input('ids');
+
         if($delids){
             $delitem = Product::whereIn('id',$delids)->delete();
             if($delitem){
@@ -196,10 +201,13 @@ class ProductController extends Controller
     }
 
     public function status($curent_status, $id)
-    {   $message = '';    
+    {   
+        $message = '';   
+
         $item = Product::find($id);
+        
         if($item) {
-            $item->status = $curent_status == 1 ? 2 : 1;
+            $item->status = $curent_status == 1 ? 0 : 1;
             $item->save();
             $message = "Cập nhật status thành công";
         }else {

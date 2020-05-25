@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="input-group input-group-sm mb-3">
-                            <input type="text" name="name" value="{{$item->name}}" class="form-control">
+                            <input type="text" name="name" value="{{ old('name',$item->name) }}" class="form-control">
                         </div> 
                     </div>
                 </div>
@@ -49,10 +49,10 @@
                     <div class="col-sm-2">
                         <div class="input-group input-group-sm mb-3">
                             <select name="status" class="form-control">
-                                <option value="{{$item->status}}" selected>{{nameStatus($item->status)}}</option>
-                                <option value="0" disabled>--Chosse Status--</option>
-                                <option value="1">Invailable</option>
-                                <option value="2">Available</option>
+
+                                <option value="" disabled>--Chosse Status--</option>
+                                <option value="0" <?=  old('status',$item->status)  == 0 ? 'selected' : '' ?>>Inactive</option>
+                                <option value="1" <?=  old('status',$item->status)  == 1 ? 'selected' : '' ?>>Active</option>
                             </select>
                         </div> 
                     </div>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-sm-10">
                         <div class="input-group input-group-sm mb-3">
-                            <textarea name="decription" value="{{$item->decription}}" class="form-control" rows="10" id="comment">{{$item->decription}}</textarea>
+                            <textarea name="decription"  class="form-control" rows="10" id="comment">{{ old('decription',$item->decription) }}</textarea>
                         </div> 
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     </div>
                     <div class="col-sm-10">
                         <div class="input-group input-group-sm mb-3">
-                            <textarea name="detail" value="{{$item->detail}}" class="form-control" rows="10" id="comment">{{$item->detail}}</textarea>
+                            <textarea name="detail" class="form-control" rows="10" id="comment">{{ old('detail',$item->detail) }}</textarea>
                         </div> 
                     </div>
                 </div>
