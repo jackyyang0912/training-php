@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     
-    <title>Website.com|Laravel</title>
+    <title>Website-Laravel</title>
 
     <!-- include('site.link') -->
     <base href="{{asset('')}}">

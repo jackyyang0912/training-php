@@ -86,27 +86,89 @@ Route::get('home',[
     'uses'=>'site\HomeController@index'
 ]);
 
+Route::get('home/{id}',[
+    'as'=>'homelist',
+    'uses'=>'site\HomeController@list'
+]);
+
 Route::get('product',[
     'as'=>'product',
     'uses'=>'site\ProductController@index'
 ]);
 
-Route::get('product/detail',[
+Route::get('product/{id}',[
+    'as'=>'productlist',
+    'uses'=>'site\ProductController@list'
+]);
+
+Route::get('product/detail/{id}',[
     'as'=>'productdetail',
     'uses'=>'site\ProductController@detail'
 ]);
 
-Route::get('checkout',[
-    'as'=>'checkout',
-    'uses'=>'site\ProductController@checkout'
-]);
-
-Route::get('cart',[
-    'as'=>'cart',
-    'uses'=>'site\ProductController@cart'
-]);
-
 Route::get('login',[
     'as'=>'login',
-    'uses'=>'site\ProductController@login'
+    'uses'=>'site\UserController@loginsite'
 ]);
+
+Route::post('login',[
+    'as'=>'login',
+    'uses'=>'site\UserController@postloginsite'
+]);
+
+Route::get('logout',[
+    'as'=>'login',
+    'uses'=>'site\UserController@postlogoutsite'
+]);
+
+Route::get('register',[
+    'as'=>'register',
+    'uses'=>'site\UserController@register'
+]);
+
+Route::post('register',[
+    'as'=>'register',
+    'uses'=>'site\UserController@postregister'
+]);
+
+Route::group(['prefix' => 'cart','middleware' => 'siteLogin'],function(){
+        Route::get('/', 'site\CartController@index');
+        Route::get('add/{id}','site\CartController@add');
+        Route::get('remove/{id}','site\CartController@remove');
+        Route::get('update/','site\CartController@update');
+});
+
+Route::group(['middleware' => 'siteLogin'],function(){
+    Route::get('checkout','site\OrderController@index');
+    Route::post('checkout','site\OrderController@checkout');
+});
+
+// Route::get('cart',[
+//     'as'=>'cart',
+//     'uses'=>'site\CartController@index'
+// ]);
+
+// Route::get('cart/add/{id}',[
+//     'as'=>'cartadd',
+//     'uses'=>'site\CartController@add'
+// ]);
+
+// Route::get('cart/remove/{id}',[
+//     'as'=>'cartremove',
+//     'uses'=>'site\CartController@remove'
+// ]);
+
+// Route::get('cart/update/',[
+//     'as'=>'cartupdate',
+//     'uses'=>'site\CartController@update'
+// ]);
+
+// Route::get('checkout',[
+//     'as'=>'checkout',
+//     'uses'=>'site\OrderController@index'
+// ]);
+
+// Route::post('checkout',[
+//     'as'=>'checkout',
+//     'uses'=>'site\OrderController@checkout'
+// ]);

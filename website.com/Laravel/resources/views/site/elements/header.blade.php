@@ -58,30 +58,28 @@
 					</div>
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
-							<ul class="nav navbar-nav">
-								
-								<li><a href="index.php?controller=order&action=index"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-								<li><a href="index.php?controller=cart&action=index"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-								
-								<?php
-									if(isset($_SESSION['isLogin']) && $_SESSION['isLogin'] == true) {
-								?>
-									<?php
-									foreach($_SESSION['user'] as $val){}
-										if($val->level >= 2) {
-											
-									?>
-										<li><a href="index.php?module=admin&controller=product&action=index"><i class="fa fa-lock"></i> Admin</a></li>
-										<li><a href="index.php?controller=user&action=logout"><i class="fa fa-lock"></i> Logout</a></li>
-									<?php }else { ?>
-
-										<li><a href="index.php?controller=user&action=index"><i class="fa fa-user"></i> Profile</a></li>
-										<li class="nav-item"><a class="nav-link" href="'index.php?controller=user&action=logout' ?>">Logout</a></li>
-									<?php } ?>
-								<?php }else { ?>
-									<li><a href="index.php?controller=user&action=login"><i class="fa fa-lock"></i> Login</a></li>
-							
-								<?php } ?>
+							<ul class="nav navbar-nav">		
+								<li><a href="checkout"><i class="fa fa-crosshairs"></i> Checkout</a></li>
+								<li><a href="cart"><i class="fa fa-shopping-cart"></i> Cart @if(Session::has('cart')) ({!!count($product_cart)!!}) @endif</a></li>
+							<?php 
+								if(Auth::check()){
+									if(Auth::user()->level >= 2){
+							?>
+										<li><a href="admin/login"><i class="fa fa-lock"></i> Admin</a></li>
+										<li><a href="logout"><i class="fa fa-lock"></i> Logout</a></li>
+							<?php 
+									}else{
+							?>
+										<li><a><i class="fa fa-user"></i>Welcome {{Auth::user()->name}}</a></li>
+										<li class="nav-item"><a class="nav-link" href="logout">Logout</a></li>
+							<?php	
+									}						
+								}else{
+							?>
+									<li><a href="login"><i class="fa fa-lock"></i>Login</a></li>
+							<?php
+								}
+							?>
 							</ul>
 						</div>
 					</div>
@@ -106,11 +104,11 @@
 								<li><a href="{{route('home')}}" class="active">Home</a></li>
 								<li class="dropdown"><a href="{{route('product')}}">Shop<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
-                                        <li><a href="{{route('product')}}">Products</a></li>
-										<li><a href="{{route('productdetail')}}">Product Details</a></li> 
-										<li><a href="{{route('checkout')}}">Checkout</a></li> 
-										<li><a href="{{route('cart')}}">Cart</a></li> 
-										<li><a href="{{route('login')}}">Login</a></li> 
+                                        <li><a href="product">Products</a></li>
+										<li><a href="product/detail/">Product Details</a></li> 
+										<li><a href="product/checkout">Checkout</a></li> 
+										<li><a href="product/cart">Cart</a></li> 
+										<li><a href="product/login">Login</a></li> 
 
                                     </ul>
                                 </li> 
