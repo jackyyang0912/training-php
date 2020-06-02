@@ -50,11 +50,13 @@
 						<div class="shopper-info">
 							<p>Shopper Information</p>
 							<form>
+
 								<input type="text" placeholder="Name">
 								<input type="text" placeholder="Username">
 								<input type="text" placeholder="Address">
 								<input type="text" placeholder="Phone">
 								<input type="text" placeholder="Email">
+
 							</form>
 
 						</div>
@@ -66,12 +68,14 @@
 							<div class="form-one">
 								<form action="checkout" method="POST">
 								@csrf
-									<input type="text" name="name" placeholder="Name" value="">
-									<input type="text" name="address" placeholder="Adress" value="">
-									<input type="text" name="phone" placeholder="Phone" value="">
-									<input type="text" name="email" placeholder="Email" value="">
+						
+								@if(Auth::check())
+									<input type="text" name="name" placeholder="Name" value="{{Auth::user()->name}}">
+									<input type="text" name="address" placeholder="Adress" value="{{Auth::user()->address}}">
+									<input type="text" name="phone" placeholder="Phone" value="{{Auth::user()->phone}}">
+									<input type="text" name="email" placeholder="Email" value="{{Auth::user()->email}}">
 									<input type="date" name="deliver_date"  value="">
-								
+								@endif
 							</div>
 							
 						</div>
